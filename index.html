@@ -376,6 +376,50 @@
   transform: scale(0.95);
   box-shadow: 0 0 5px #00ffcc;
 }
+    <!-- Tambahkan di bagian <style> sebelum </style> -->
+/* Modal Challenge Form */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 50;
+  padding-top: 80px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+.modal-content {
+  background-color: #111;
+  margin: auto;
+  padding: 20px;
+  border: 2px solid #00ffcc;
+  width: 300px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0 0 15px #00ffcc;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+}
+.close:hover {
+  color: white;
+}
+.btn-submit {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background: #00ffcc;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-submit:hover {
+  background: #00cca3;
+}
+
 </style>
 </head>
 <body>
@@ -532,7 +576,107 @@ document.getElementById('challengeBtn').addEventListener('click', function () {
   .then(data => alert(data.message || "Challenge sent to Discord!"))
   .catch(err => console.error(err));
 });
+    <!-- Tambahkan di akhir <script> sebelum </script> terakhir -->
+// Tambah tombol Challenge di info box
+const infoBoxElem = document.getElementById('info-box');
+const challengeBtn = document.createElement('button');
+challengeBtn.textContent = 'Challenge';
+challengeBtn.className = 'btn-submit';
+challengeBtn.onclick = openChallengeForm;
+infoBoxElem.appendChild(challengeBtn);
+
+// Modal form
+const modal = document.getElementById('challengeModal');
+const closeModalBtn = document.getElementById('closeModal');
+
+function openChallengeForm() {
+  document.getElementById('territory').value =
+    document.getElementById('info-track-name').textContent;
+  modal.style.display = 'block';
+}
+closeModalBtn.onclick = () => modal.style.display = 'none';
+window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+
+// Submit form
+document.getElementById('challengeForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const data = {
+    territory: document.getElementById('territory').value,
+    bet: document.getElementById('bet').value,
+    carType: document.getElementById('carType').value,
+    nitrous: document.getElementById('nitrous').value,
+    altRoad: document.getElementById('altRoad').value,
+    type: document.getElementById('type').value,
+  };
+
+  if (Object.values(data).some(v => v.trim() === '')) {
+    alert('Semua field wajib diisi!');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/challenge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert('Challenge berhasil dibuat di Discord!');
+      modal.style.display = 'none';
+    } else {
+      alert('Gagal membuat challenge: ' + (result.message || 'Unknown error'));
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
 </script>
 <!-- The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22 -->
+    <!-- Tambahkan di akhir <body>, sebelum </body> -->
+<div id="challengeModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Create Challenge</h2>
+    <form id="challengeForm">
+      <label>Territory:</label>
+      <input type="text" id="territory" name="territory" readonly>
+
+      <label>Jumlah Uang Taruhan:</label>
+      <input type="text" id="bet" name="bet" required>
+
+      <label>Jenis Mobil:</label>
+      <input type="text" id="carType" name="carType" required>
+
+      <label>Nitrous:</label>
+      <select id="nitrous" name="nitrous" required>
+        <option value="">--Pilih--</option>
+        <option value="Boleh">Boleh</option>
+        <option value="Tidak Boleh">Tidak Boleh</option>
+      </select>
+
+      <label>Alternative Road:</label>
+      <select id="altRoad" name="altRoad" required>
+        <option value="">--Pilih--</option>
+        <option value="Boleh">Boleh</option>
+        <option value="Tidak Boleh">Tidak Boleh</option>
+        <option value="-">-</option>
+      </select>
+
+      <label>Tipe:</label>
+      <select id="type" name="type" required>
+        <option value="">--Pilih--</option>
+        <option value="Duel">Duel</option>
+        <option value="Team">Team</option>
+      </select>
+
+      <button type="submit" class="btn-submit">Kirim Challenge</button>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
