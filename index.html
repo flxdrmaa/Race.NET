@@ -423,6 +423,48 @@
 </style>
 </head>
 <body>
+    <!-- Tambahkan di akhir <body>, sebelum </body> -->
+<div id="challengeModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Create Challenge</h2>
+    <form id="challengeForm">
+      <label>Territory:</label>
+      <input type="text" id="territory" name="territory" readonly>
+
+      <label>Jumlah Uang Taruhan:</label>
+      <input type="text" id="bet" name="bet" required>
+
+      <label>Jenis Mobil:</label>
+      <input type="text" id="carType" name="carType" required>
+
+      <label>Nitrous:</label>
+      <select id="nitrous" name="nitrous" required>
+        <option value="">--Pilih--</option>
+        <option value="Boleh">Boleh</option>
+        <option value="Tidak Boleh">Tidak Boleh</option>
+      </select>
+
+      <label>Alternative Road:</label>
+      <select id="altRoad" name="altRoad" required>
+        <option value="">--Pilih--</option>
+        <option value="Boleh">Boleh</option>
+        <option value="Tidak Boleh">Tidak Boleh</option>
+        <option value="-">-</option>
+      </select>
+
+      <label>Tipe:</label>
+      <select id="type" name="type" required>
+        <option value="">--Pilih--</option>
+        <option value="Duel">Duel</option>
+        <option value="Team">Team</option>
+      </select>
+
+      <button type="submit" class="btn-submit">Kirim Challenge</button>
+    </form>
+  </div>
+</div>
+
 <div class="map-container">
 <div class="background-overlay"></div>
 <div class="topbar">
@@ -636,47 +678,6 @@ document.getElementById('challengeForm').addEventListener('submit', async functi
 
 </script>
 <!-- The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22 -->
-    <!-- Tambahkan di akhir <body>, sebelum </body> -->
-<div id="challengeModal" class="modal">
-  <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
-    <h2>Create Challenge</h2>
-    <form id="challengeForm">
-      <label>Territory:</label>
-      <input type="text" id="territory" name="territory" readonly>
-
-      <label>Jumlah Uang Taruhan:</label>
-      <input type="text" id="bet" name="bet" required>
-
-      <label>Jenis Mobil:</label>
-      <input type="text" id="carType" name="carType" required>
-
-      <label>Nitrous:</label>
-      <select id="nitrous" name="nitrous" required>
-        <option value="">--Pilih--</option>
-        <option value="Boleh">Boleh</option>
-        <option value="Tidak Boleh">Tidak Boleh</option>
-      </select>
-
-      <label>Alternative Road:</label>
-      <select id="altRoad" name="altRoad" required>
-        <option value="">--Pilih--</option>
-        <option value="Boleh">Boleh</option>
-        <option value="Tidak Boleh">Tidak Boleh</option>
-        <option value="-">-</option>
-      </select>
-
-      <label>Tipe:</label>
-      <select id="type" name="type" required>
-        <option value="">--Pilih--</option>
-        <option value="Duel">Duel</option>
-        <option value="Team">Team</option>
-      </select>
-
-      <button type="submit" class="btn-submit">Kirim Challenge</button>
-    </form>
-  </div>
-</div>
-
+    
 </body>
 </html>
