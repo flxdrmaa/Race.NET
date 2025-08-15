@@ -588,7 +588,7 @@
         return;
       }
       try {
-        const response = await fetch('/api/challenge', {
+        const response = await fetch('/api/create-challenge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
