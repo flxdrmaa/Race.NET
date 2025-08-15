@@ -50,14 +50,12 @@ Tipe : ${type}
     const threadData = await threadResponse.json();
 
     // 2️⃣ Kirim pesan ke thread
-    const messageResponse = await fetch(`https://discord.com/api/v10/channels/${threadData.id}/messages`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bot ${botToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content: messageContent }),
-    });
+    const res = await fetch('/api/create-challenge', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(formData),
+});
+
 
     if (!messageResponse.ok) {
       const text = await messageResponse.text();
