@@ -12,12 +12,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // Ambil konfigurasi dari variabel lingkungan
+  // Ambil konfigurasi dari variabel lingkungan (harus diatur di Vercel)
   const forumChannelId = process.env.FORUM_CHANNEL_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
 
   // Validasi variabel lingkungan
   if (!forumChannelId || !botToken) {
+    console.error('Environment Variables:', { forumChannelId, botToken });
     return res.status(500).json({ message: 'Server configuration error: Missing Discord credentials' });
   }
 
@@ -32,7 +33,7 @@ Tipe : ${type}
   `.trim();
 
   try {
-    // Kirim permintaan ke Discord API untuk membuat thread
+    console.log('Sending request to Discord API with:', { forumChannelId, messageContent });
     const response = await fetch(`https://discord.com/api/v10/channels/${forumChannelId}/threads`, {
       method: 'POST',
       headers: {
@@ -41,24 +42,21 @@ Tipe : ${type}
       },
       body: JSON.stringify({
         name: `Challenge: ${territory}`,
-        auto_archive_duration: 1440, // Durasi arsip dalam menit (24 jam)
+        auto_archive_duration: 1440, // 24 jam
         message: { content: messageContent },
       }),
     });
 
-    // Ambil data respons dari Discord
     const data = await response.json();
-
-    // Periksa status respons
     if (!response.ok) {
-      console.error('Discord API Error:', data); // Log error untuk debugging
+      console.error('Discord API Error:', data);
       return res.status(400).json({ message: 'Failed to create challenge', error: data });
     }
 
-    // Berhasil, kembalikan respons sukses
+    console.log('Challenge created successfully:', data);
     res.status(200).json({ message: 'Challenge created!', data });
   } catch (error) {
-    console.error('Error in handler:', error); // Log error untuk debugging
+    console.error('Error in handler:', error);
     res.status(500).json({ message: 'Error creating challenge', error: error.message });
   }
 }
