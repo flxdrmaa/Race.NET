@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Street.NET</title>
-<style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Street.NET</title>
+  <style>
     :root {
       --default-zone-logo-size: clamp(30px, 5vw, 40px);
       --default-info-box-logo-size: clamp(30px, 10vw, 40px);
@@ -46,7 +45,7 @@
       background: rgba(0, 0, 0, 0.6);
       color: #00ffcc;
       font-size: clamp(12px, 3vw, 16px);
-      padding: clamp(8px, 2vw, 12px) clamp(10px, 3vw, 20px);
+      padding: 8px 20px;
       font-weight: bold;
       letter-spacing: 1px;
       z-index: 10;
@@ -65,7 +64,7 @@
     .map-frame {
       position: relative;
       width: min(90vw, 1200px);
-      margin: clamp(20px, 5vw, 60px) auto;
+      margin: 20px auto;
       border: 2px solid rgba(0, 255, 200, 0.3);
       box-shadow: 0 0 20px rgba(0, 255, 200, 0.1);
       border-radius: 20px;
@@ -124,7 +123,7 @@
       width: min(70vw, 250px);
       background: #0f1f1d;
       border: 2px solid #1b3d39;
-      padding: clamp(6px, 1.5vw, 8px);
+      padding: 8px;
       color: white;
       display: none;
       border-radius: 12px;
@@ -140,49 +139,27 @@
     }
 
     @keyframes neon-border {
-      0% {
-        box-shadow: 0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;
-      }
-      25% {
-        box-shadow: 0 0 10px #800080, 0 0 20px #00ff00, 0 0 25px #800080;
-      }
-      50% {
-        box-shadow: 0 0 5px #00ff00, 0 0 15px #800080, 0 0 20px #00ff00;
-      }
-      75% {
-        box-shadow: 0 0 10px #00ff00, 0 0 20px #800080, 0 0 25px #00ff00;
-      }
-      100% {
-        box-shadow: 0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;
-      }
+      0% { box-shadow: 0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00; }
+      25% { box-shadow: 0 0 10px #800080, 0 0 20px #00ff00, 0 0 25px #800080; }
+      50% { box-shadow: 0 0 5px #00ff00, 0 0 15px #800080, 0 0 20px #00ff00; }
+      75% { box-shadow: 0 0 10px #00ff00, 0 0 20px #800080, 0 0 25px #00ff00; }
+      100% { box-shadow: 0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00; }
     }
 
     @keyframes scaleFadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(-50%) scale(0.7);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-      }
+      0% { opacity: 0; transform: translateY(-50%) scale(0.7); }
+      100% { opacity: 1; transform: translateY(-50%) scale(1); }
     }
 
     @keyframes scaleFadeOut {
-      0% {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-50%) scale(0.7);
-      }
+      0% { opacity: 1; transform: translateY(-50%) scale(1); }
+      100% { opacity: 0; transform: translateY(-50%) scale(0.7); }
     }
 
     #info-box .header {
       display: flex;
       align-items: center;
-      gap: clamp(8px, 2vw, 10px);
+      gap: 10px;
       justify-content: flex-start;
     }
 
@@ -196,7 +173,7 @@
     }
 
     #info-box .title {
-      font-size: clamp(10px, 2.5vw, 12px);
+      font-size: 12px;
       margin: 0 auto;
       color: #bbb;
       text-align: center;
@@ -205,13 +182,13 @@
 
     #info-box .title h2 {
       margin: 0;
-      font-size: clamp(14px, 3.5vw, 16px);
+      font-size: 16px;
       color: #fff200;
     }
 
     #info-box .track-map {
       width: 100%;
-      margin: clamp(8px, 2vw, 10px) 0;
+      margin: 10px 0;
     }
 
     #info-box .track-map img {
@@ -221,114 +198,117 @@
       border: 1px solid #555;
       border-radius: 8px;
       background: #111;
-      max-height: clamp(100px, 30vw, 140px);
+      max-height: 140px;
     }
 
     #info-box .track-name {
       font-weight: bold;
-      font-size: clamp(12px, 3vw, 15px);
+      font-size: 15px;
       text-align: center;
       border-top: 1px solid #444;
-      padding-top: clamp(4px, 1.5vw, 6px);
-      margin-top: clamp(4px, 1.5vw, 6px);
+      padding-top: 6px;
+      margin-top: 6px;
       color: #aaffff;
     }
 
     #info-box .track-details {
-      margin-top: clamp(4px, 1.5vw, 5px);
+      margin-top: 5px;
     }
 
     #info-box .track-details div {
       display: flex;
       justify-content: space-between;
-      font-size: clamp(11px, 2.5vw, 13px);
-      padding: clamp(2px, 0.5vw, 3px) 0;
+      font-size: 13px;
+      padding: 3px 0;
     }
 
     #info-box .track-details span {
       color: #ccc;
     }
 
-    /* Media Queries untuk Responsivitas */
-    @media screen and (max-width: 768px) {
-      :root {
-        --default-zone-logo-size: clamp(25px, 6vw, 30px);
-        --default-info-box-logo-size: clamp(25px, 8vw, 30px);
-      }
-
-      .map-frame {
-        width: 95vw;
-        margin: clamp(10px, 3vw, 20px) auto;
-      }
-
-      #info-box {
-        width: min(80vw, 220px);
-        right: clamp(5px, 2vw, 10px);
-        padding: clamp(4px, 1vw, 6px);
-      }
-
-      #info-box .track-map img {
-        max-height: clamp(80px, 25vw, 100px);
-      }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      padding-top: 80px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      overflow-y: auto;
     }
 
-    @media screen and (max-width: 480px) {
-      :root {
-        --default-zone-logo-size: clamp(20px, 5vw, 25px);
-        --default-info-box-logo-size: clamp(20px, 6vw, 25px);
-      }
-
-      .topbar {
-        font-size: clamp(10px, 2.5vw, 12px);
-        padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 10px);
-      }
-
-      .map-frame {
-        width: 98vw;
-        border-radius: 10px;
-      }
-
-      #info-box {
-        width: min(90vw, 200px);
-        top: auto;
-        bottom: 10px;
-        right: 50%;
-        transform: translateX(50%);
-        padding: clamp(4px, 1vw, 6px);
-      }
-
-      #info-box .track-map img {
-        max-height: clamp(70px, 20vw, 90px);
-      }
-
-      #info-box.active {
-        animation: scaleFadeInMobile 0.5s ease-out forwards, neon-border 1.5s infinite ease-in-out;
-      }
-
-      @keyframes scaleFadeInMobile {
-        0% {
-          opacity: 0;
-          transform: translateX(50%) scale(0.7);
-        }
-        100% {
-          opacity: 1;
-          transform: translateX(50%) scale(1);
-        }
-      }
-
-      @keyframes scaleFadeOut {
-        0% {
-          opacity: 1;
-          transform: translateX(50%) scale(1);
-        }
-        100% {
-          opacity: 0;
-          transform: translateX(50%) scale(0.7);
-        }
-      }
+    .modal-content {
+      background-color: #111;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #00ffcc;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      color: white;
+      box-shadow: 0 0 15px #00ffcc;
+      position: relative;
+      animation: slideIn 0.3s ease-out;
     }
 
-    /* Styles for Audio Control Button */
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: white;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background: #00ffcc;
+      color: black;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-submit:hover {
+      background: #00cca3;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      background-color: #333;
+      border: 1px solid #00ffcc;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    select {
+      height: 40px;
+    }
+
     .audio-controls {
       position: fixed;
       bottom: 20px;
@@ -352,199 +332,187 @@
       background: #1b3d39;
       color: #00ffcc;
     }
-  
-#challengeBtn {
-  margin-top: 10px;
-  width: 100%;
-  background-color: #00ffcc;
-  color: #000;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
-  cursor: pointer;
-  box-shadow: 0 0 10px #00ffcc88;
-  transition: all 0.15s ease-in-out;
-}
 
-#challengeBtn:hover {
-  background-color: #00e6b8;
-  box-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffccaa;
-}
+    #challengeBtn {
+      margin-top: 10px;
+      width: 100%;
+      background-color: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffcc88;
+      transition: all 0.15s ease-in-out;
+    }
 
-#challengeBtn:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 5px #00ffcc;
-}
-    <!-- Tambahkan di bagian <style> sebelum </style> -->
-/* Modal Challenge Form */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 50;
-  padding-top: 80px;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.6);
-}
-.modal-content {
-  background-color: #111;
-  margin: auto;
-  padding: 20px;
-  border: 2px solid #00ffcc;
-  width: 300px;
-  border-radius: 10px;
-  color: white;
-  box-shadow: 0 0 15px #00ffcc;
-}
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 22px;
-  cursor: pointer;
-}
-.close:hover {
-  color: white;
-}
-.btn-submit {
-  width: 100%;
-  padding: 8px;
-  margin-top: 10px;
-  background: #00ffcc;
-  color: black;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.btn-submit:hover {
-  background: #00cca3;
-}
+    #challengeBtn:hover {
+      background-color: #00e6b8;
+      box-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffccaa;
+    }
 
-</style>
+    #challengeBtn:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 5px #00ffcc;
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        max-width: 350px;
+      }
+      #info-box {
+        width: min(80vw, 220px);
+        right: clamp(5px, 2vw, 10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --default-zone-logo-size: clamp(20px, 5vw, 25px);
+        --default-info-box-logo-size: clamp(20px, 6vw, 25px);
+      }
+      .topbar {
+        font-size: clamp(10px, 2.5vw, 12px);
+        padding: 6px 10px;
+      }
+      .map-frame {
+        width: 98vw;
+        border-radius: 10px;
+      }
+      #info-box {
+        width: min(90vw, 200px);
+        top: auto;
+        bottom: 10px;
+        right: 50%;
+        transform: translateX(50%);
+      }
+      .modal-content {
+        width: 95%;
+        max-width: 300px;
+        margin: 10px auto;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Tambahkan di akhir <body>, sebelum </body> -->
-<div id="challengeModal" class="modal">
-  <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
-    <h2>Create Challenge</h2>
-    <form id="challengeForm">
-      <label>Territory:</label>
-      <input type="text" id="territory" name="territory" readonly>
-
-      <label>Jumlah Uang Taruhan:</label>
-      <input type="text" id="bet" name="bet" required>
-
-      <label>Jenis Mobil:</label>
-      <input type="text" id="carType" name="carType" required>
-
-      <label>Nitrous:</label>
-      <select id="nitrous" name="nitrous" required>
-        <option value="">--Pilih--</option>
-        <option value="Boleh">Boleh</option>
-        <option value="Tidak Boleh">Tidak Boleh</option>
-      </select>
-
-      <label>Alternative Road:</label>
-      <select id="altRoad" name="altRoad" required>
-        <option value="">--Pilih--</option>
-        <option value="Boleh">Boleh</option>
-        <option value="Tidak Boleh">Tidak Boleh</option>
-        <option value="-">-</option>
-      </select>
-
-      <label>Tipe:</label>
-      <select id="type" name="type" required>
-        <option value="">--Pilih--</option>
-        <option value="Duel">Duel</option>
-        <option value="Team">Team</option>
-      </select>
-
-      <button type="submit" class="btn-submit">Kirim Challenge</button>
-    </form>
-  </div>
-</div>
-
-<div class="map-container">
-<div class="background-overlay"></div>
-<div class="topbar">
-<h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span>
-</h2></div>
-<!-- Main Map Frame -->
-<div class="map-frame">
-<img alt="Main Map" loading="lazy" src="https://i.imgur.com/OwTml66.jpeg"/>
-<!-- Zones (12 total) dengan atribut untuk ukuran -->
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="100px" onclick="showInfo(1)" style="top: 27.28%; left: 11.68%; --zone-logo-size: 90px;"><img alt="Zone 1" loading="lazy" src="https://i.imgur.com/HQI3RaD.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="40px" onclick="showInfo(2)" style="top: 34.72%; left: 3.33%; --zone-logo-size: 90px;"><img alt="Zone 2" loading="lazy" src="https://i.imgur.com/9fH0B1B.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="45px" onclick="showInfo(3)" style="top: 43.29%; left: 2.47%; --zone-logo-size: 90px;"><img alt="Zone 3" loading="lazy" src="https://i.imgur.com/pHvVSP3.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="50px" onclick="showInfo(4)" style="top: 49.62%; left: 13.11%; --zone-logo-size: 90px;"><img alt="Zone 4" loading="lazy" src="https://i.imgur.com/jjbdKi7.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="30px" onclick="showInfo(5)" style="top: 64.12%; left: 25.31%; --zone-logo-size: 90px;"><img alt="Zone 5" loading="lazy" src="https://i.imgur.com/9cjhVvj.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="38px" onclick="showInfo(6)" style="top: 2.89%; left: 82.71%; --zone-logo-size: 90px;"><img alt="Zone 6" loading="lazy" src="https://i.imgur.com/9cjhVvj.png"/></div>
-      //9//
-      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="42px" onclick="showInfo(7)" style="top: 7.54%; left: 75.47%; --zone-logo-size: 90px;"><img alt="Zone 7" loading="lazy" src="https://i.imgur.com/9fH0B1B.png"/></div>
-      //7//
-      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="36px" onclick="showInfo(8)" style="top: 14.85%; left: 78.94%; --zone-logo-size: 90px;"><img alt="Zone 8" loading="lazy" src="https://i.imgur.com/9cjhVvj.png"/></div>
-      //8//
-      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="44px" onclick="showInfo(9)" style="top: 20.58%; left: 87.65%; --zone-logo-size: 90px;"><img alt="Zone 9" loading="lazy" src="https://i.imgur.com/7v4YQro.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="32px" onclick="showInfo(10)" style="top: 47.36%; left: 42.02%; --zone-logo-size: 90px;"><img alt="Zone 10" loading="lazy" src="https://i.imgur.com/9fH0B1B.png"/></div>
-<div class="zone" data-info-logo-size="70px" data-zone-logo-size="48px" onclick="showInfo(11)" style="top: 85.72%; left: 75.71%; --zone-logo-size: 90px;"><img alt="Zone 11" loading="lazy" src="https://i.imgur.com/9cjhVvj.png"/></div>
-</div>
-<!-- Info Box -->
-<div id="info-box">
-<div class="header">
-<img alt="Club Logo" class="logo" id="info-logo" loading="lazy" src=""/>
-<div class="title">
-<p>Controlled By</p>
-<h2 id="info-club">CLUB</h2>
-</div>
-</div>
-<div class="track-map">
-<img alt="Track Map" id="info-track-map" loading="lazy" src=""/>
-</div>
-<div class="track-name" id="info-track-name">Track Name</div>
-<div class="track-details">
-<div><span>Length</span><strong id="info-length">-</strong></div>
-<div><span>Rounds</span><strong id="info-laps">-</strong></div>
-<div><span>Record</span><strong id="info-record">-</strong></div>
-<div><span>Cash</span><strong id="info-cash">-</strong></div>
-</div>
-<button id="challengeBtn" style="
-  margin-top: 10px;
-  width: 100%;
-  background-color: #00ffcc;
-  color: #000;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
-  cursor: pointer;
-">Challenge</button>
-</div>
-<!-- Background Music with Controls -->
-<div class="audio-controls">
-<button id="playPauseBtn">Play Music</button>
-</div>
-<audio id="backgroundMusic" loop="">
-<source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg"/>
+  <div class="map-container">
+    <div class="background-overlay"></div>
+    <div class="topbar">
+      <h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span></h2>
+    </div>
+    <div class="map-frame">
+      <img alt="Main Map" loading="lazy" src="https://i.imgur.com/OwTml66.jpeg" />
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="100px" onclick="showInfo(1)" style="top: 27.28%; left: 11.68%; --zone-logo-size: 90px;">
+        <img alt="Zone 1" loading="lazy" src="https://i.imgur.com/HQI3RaD.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="40px" onclick="showInfo(2)" style="top: 34.72%; left: 3.33%; --zone-logo-size: 90px;">
+        <img alt="Zone 2" loading="lazy" src="https://i.imgur.com/9fH0B1B.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="45px" onclick="showInfo(3)" style="top: 43.29%; left: 2.47%; --zone-logo-size: 90px;">
+        <img alt="Zone 3" loading="lazy" src="https://i.imgur.com/pHvVSP3.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="50px" onclick="showInfo(4)" style="top: 49.62%; left: 13.11%; --zone-logo-size: 90px;">
+        <img alt="Zone 4" loading="lazy" src="https://i.imgur.com/jjbdKi7.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="30px" onclick="showInfo(5)" style="top: 64.12%; left: 25.31%; --zone-logo-size: 90px;">
+        <img alt="Zone 5" loading="lazy" src="https://i.imgur.com/9cjhVvj.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="38px" onclick="showInfo(6)" style="top: 2.89%; left: 82.71%; --zone-logo-size: 90px;">
+        <img alt="Zone 6" loading="lazy" src="https://i.imgur.com/9cjhVvj.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="42px" onclick="showInfo(7)" style="top: 7.54%; left: 75.47%; --zone-logo-size: 90px;">
+        <img alt="Zone 7" loading="lazy" src="https://i.imgur.com/9fH0B1B.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="36px" onclick="showInfo(8)" style="top: 14.85%; left: 78.94%; --zone-logo-size: 90px;">
+        <img alt="Zone 8" loading="lazy" src="https://i.imgur.com/9cjhVvj.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="44px" onclick="showInfo(9)" style="top: 20.58%; left: 87.65%; --zone-logo-size: 90px;">
+        <img alt="Zone 9" loading="lazy" src="https://i.imgur.com/7v4YQro.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="32px" onclick="showInfo(10)" style="top: 47.36%; left: 42.02%; --zone-logo-size: 90px;">
+        <img alt="Zone 10" loading="lazy" src="https://i.imgur.com/9fH0B1B.png" />
+      </div>
+      <div class="zone" data-info-logo-size="70px" data-zone-logo-size="48px" onclick="showInfo(11)" style="top: 85.72%; left: 75.71%; --zone-logo-size: 90px;">
+        <img alt="Zone 11" loading="lazy" src="https://i.imgur.com/9cjhVvj.png" />
+      </div>
+    </div>
+    <div id="info-box">
+      <div class="header">
+        <img alt="Club Logo" class="logo" id="info-logo" loading="lazy" src="" />
+        <div class="title">
+          <p>Controlled By</p>
+          <h2 id="info-club">CLUB</h2>
+        </div>
+      </div>
+      <div class="track-map">
+        <img alt="Track Map" id="info-track-map" loading="lazy" src="" />
+      </div>
+      <div class="track-name" id="info-track-name">Track Name</div>
+      <div class="track-details">
+        <div><span>Length</span><strong id="info-length">-</strong></div>
+        <div><span>Rounds</span><strong id="info-laps">-</strong></div>
+        <div><span>Record</span><strong id="info-record">-</strong></div>
+        <div><span>Cash</span><strong id="info-cash">-</strong></div>
+      </div>
+      <button id="challengeBtn">Challenge</button>
+    </div>
+    <div class="audio-controls">
+      <button id="playPauseBtn">Play Music</button>
+    </div>
+    <audio id="backgroundMusic" loop="">
+      <source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
-</div>
-<script>
+  </div>
+  <div id="challengeModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2>Create Challenge</h2>
+      <form id="challengeForm">
+        <label>Territory:</label>
+        <input type="text" id="territory" name="territory" readonly />
+        <label>Jumlah Uang Taruhan:</label>
+        <input type="text" id="bet" name="bet" required />
+        <label>Jenis Mobil:</label>
+        <input type="text" id="carType" name="carType" required />
+        <label>Nitrous:</label>
+        <select id="nitrous" name="nitrous" required>
+          <option value="">--Pilih--</option>
+          <option value="Boleh">Boleh</option>
+          <option value="Tidak Boleh">Tidak Boleh</option>
+        </select>
+        <label>Alternative Road:</label>
+        <select id="altRoad" name="altRoad" required>
+          <option value="">--Pilih--</option>
+          <option value="Boleh">Boleh</option>
+          <option value="Tidak Boleh">Tidak Boleh</option>
+          <option value="-">-</option>
+        </select>
+        <label>Tipe:</label>
+        <select id="type" name="type" required>
+          <option value="">--Pilih--</option>
+          <option value="Duel">Duel</option>
+          <option value="Team">Team</option>
+        </select>
+        <button type="submit" class="btn-submit">Kirim Challenge</button>
+      </form>
+    </div>
+  </div>
+  <script>
     const zoneData = {
       1: { club: "Nocturne Performance", logo: "https://i.imgur.com/HQI3RaD.png", track: "https://i.imgur.com/cEKMybS.png", name: "Downtown", length: "5 Miles", laps: "3", record: "01:31:41", cash: "$15.000" },
-      2: { club: "Invicible Midnight Racer", logo: "https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/a4toW9I.png", name: "Juniper hill", length: "5,2 Miles", laps: "6", record: "02:09:03", cash: "$15.000" },
-      3: { club: "Rising Sun", logo: "https://i.imgur.com/pHvVSP3.png", track: "https://i.imgur.com/hlErEUV.png", name: "Ocean Flat", length: "2,3 Miles", laps: "6", record: "00:58:48", cash: "$10.000" },
-      4: { club: "SpeedCreed", logo: "https://i.imgur.com/jjbdKi7.png", track: "https://i.imgur.com/lR0BjGY.png", name: " Easter Bay", length: "3,5 Miles", laps: "3", record: "01:03:80", cash: "$15.000" },
-      5: { club: "Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/rAKyRxG.png", name: "Foster Valley", length: "6,4", laps: "3", record: "03:02:93", cash: "$12.000" },
-      6: { club: "Redline Speedster", logo: "https://i.imgur.com/0I3Al0v.png", track: "https://i.imgur.com/2aZpTcF.png", name: "Emerald Isle", length: "2,2 Miles", laps: "5", record: "00:51:74", cash: "$8.000" },
-      //9//
-      7: { club: "Invicible Midnight Racer", logo:"https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/2MG6n6Y.png", name: "Red Sands", length: "2,6 Miles", laps: "5", record: "01:09:63", cash: "$8.000" },
-      //8//
+      2: { club: "Invicible Midnight Racer", logo: "https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/a4toW9I.png", name: "Juniper Hill", length: "5.2 Miles", laps: "6", record: "02:09:03", cash: "$15.000" },
+      3: { club: "Rising Sun", logo: "https://i.imgur.com/pHvVSP3.png", track: "https://i.imgur.com/hlErEUV.png", name: "Ocean Flat", length: "2.3 Miles", laps: "6", record: "00:58:48", cash: "$10.000" },
+      4: { club: "SpeedCreed", logo: "https://i.imgur.com/jjbdKi7.png", track: "https://i.imgur.com/lR0BjGY.png", name: "Easter Bay", length: "3.5 Miles", laps: "3", record: "01:03:80", cash: "$15.000" },
+      5: { club: "Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/rAKyRxG.png", name: "Foster Valley", length: "6.4 Miles", laps: "3", record: "03:02:93", cash: "$12.000" },
+      6: { club: "Redline Speedster", logo: "https://i.imgur.com/0I3Al0v.png", track: "https://i.imgur.com/2aZpTcF.png", name: "Emerald Isle", length: "2.2 Miles", laps: "5", record: "00:51:74", cash: "$8.000" },
+      7: { club: "Invicible Midnight Racer", logo: "https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/2MG6n6Y.png", name: "Red Sands", length: "2.6 Miles", laps: "5", record: "01:09:63", cash: "$8.000" },
+      8: { club: "Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/PeHliUG.png", name: "Old Venturas Strip", length: "5.8 Miles", laps: "6", record: "03:32:80", cash: "$20.000" },
       9: { club: "SpeedCreed", logo: "https://i.imgur.com/7v4YQro.png", track: "https://i.imgur.com/4I5LTgq.png", name: "Linden Station", length: "4 Miles", laps: "5", record: "1:16:01", cash: "$10.000" },
-      //7//
-      8: { club: " Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/PeHliUG.png", name: "Old Venturas Strip", length: "5,8 Miles", laps: "6", record: "03:32:80", cash: "$20.000" },
-      10: { club: "Invicible Midnight Racer", logo: "https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/YZA4Zr5.png", name: "Blueberry", length: "4,8 Miles", laps: "3", record: " 01:37:24", cash: "$12.000" },
-      11: { club: "Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/TtBeB6K.png", name: "Ocean Docks", length: "5,2 Miles", laps: "5", record: "01:50:11", cash: "$10.000" },
+      10: { club: "Invicible Midnight Racer", logo: "https://i.imgur.com/9fH0B1B.png", track: "https://i.imgur.com/YZA4Zr5.png", name: "Blueberry", length: "4.8 Miles", laps: "3", record: "01:37:24", cash: "$12.000" },
+      11: { club: "Redline Speedster", logo: "https://i.imgur.com/9cjhVvj.png", track: "https://i.imgur.com/TtBeB6K.png", name: "Ocean Docks", length: "5.2 Miles", laps: "5", record: "01:50:11", cash: "$10.000" }
     };
 
     function showInfo(id) {
@@ -581,103 +549,62 @@
       }, 500);
     }
 
-    // Audio Control
     const audio = document.getElementById('backgroundMusic');
     const playPauseBtn = document.getElementById('playPauseBtn');
-
-    playPauseBtn.addEventListener('click', function () {
+    playPauseBtn.addEventListener('click', () => {
       if (audio.paused) {
-        audio.play().catch(error => {
-          console.log("Error playing audio:", error);
-        });
+        audio.play().catch(error => console.log("Error playing audio:", error));
         playPauseBtn.textContent = 'Pause Music';
       } else {
         audio.pause();
         playPauseBtn.textContent = 'Play Music';
       }
     });
-  
-document.getElementById('challengeBtn').addEventListener('click', function () {
-  const track = document.getElementById('info-track-name').textContent;
 
-  const payload = {
-    territory: track,
-    bet: "-",
-    carType: "-",
-    nitrous: "Boleh/Tidak boleh",
-    altRoad: "Boleh/Tidak boleh/-",
-    type: "Duel/Team"
-  };
+    const modal = document.getElementById('challengeModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    document.getElementById('challengeBtn').addEventListener('click', openChallengeForm);
 
-  fetch('/api/create-challenge', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message || "Challenge sent to Discord!"))
-  .catch(err => console.error(err));
-});
-
-// Tambah tombol Challenge di info box
-const infoBoxElem = document.getElementById('info-box');
-const challengeBtn = document.createElement('button');
-challengeBtn.textContent = 'Challenge';
-challengeBtn.className = 'btn-submit';
-challengeBtn.onclick = openChallengeForm;
-infoBoxElem.appendChild(challengeBtn);
-
-// Modal form
-const modal = document.getElementById('challengeModal');
-const closeModalBtn = document.getElementById('closeModal');
-
-function openChallengeForm() {
-  document.getElementById('territory').value =
-    document.getElementById('info-track-name').textContent;
-  modal.style.display = 'block';
-}
-closeModalBtn.onclick = () => modal.style.display = 'none';
-window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
-
-// Submit form
-document.getElementById('challengeForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const data = {
-    territory: document.getElementById('territory').value,
-    bet: document.getElementById('bet').value,
-    carType: document.getElementById('carType').value,
-    nitrous: document.getElementById('nitrous').value,
-    altRoad: document.getElementById('altRoad').value,
-    type: document.getElementById('type').value,
-  };
-
-  if (Object.values(data).some(v => v.trim() === '')) {
-    alert('Semua field wajib diisi!');
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/challenge', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-    if (res.ok) {
-      alert('Challenge berhasil dibuat di Discord!');
-      modal.style.display = 'none';
-    } else {
-      alert('Gagal membuat challenge: ' + (result.message || 'Unknown error'));
+    function openChallengeForm() {
+      const trackName = document.getElementById('info-track-name').textContent;
+      document.getElementById('territory').value = trackName;
+      modal.style.display = 'block';
     }
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-});
 
-</script>
-<!-- The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22 -->
-    
+    closeModalBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+    document.getElementById('challengeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        territory: document.getElementById('territory').value,
+        bet: document.getElementById('bet').value,
+        carType: document.getElementById('carType').value,
+        nitrous: document.getElementById('nitrous').value,
+        altRoad: document.getElementById('altRoad').value,
+        type: document.getElementById('type').value
+      };
+      if (Object.values(data).some(v => v.trim() === '')) {
+        alert('Semua field wajib diisi!');
+        return;
+      }
+      try {
+        const response = await fetch('/api/challenge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (response.ok) {
+          alert(`Challenge berhasil dibuat di Discord! ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })}`);
+          modal.style.display = 'none';
+        } else {
+          alert('Gagal membuat challenge: ' + (result.message || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
 </body>
 </html>
