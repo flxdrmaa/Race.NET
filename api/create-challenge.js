@@ -1,28 +1,22 @@
 export default async function handler(req, res) {
-  // Hanya izinkan metode POST
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  // Ekstrak data dari body request
   const { territory, bet, carType, nitrous, altRoad, type } = req.body;
 
-  // Validasi semua field wajib
   if (!territory || !bet || !carType || !nitrous || !altRoad || !type) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // Ambil konfigurasi dari variabel lingkungan (harus diatur di Vercel)
   const forumChannelId = process.env.FORUM_CHANNEL_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
 
-  // Validasi variabel lingkungan
   if (!forumChannelId || !botToken) {
-    console.error('Environment Variables:', { forumChannelId, botToken });
+    console.error('Missing environment variables:', { forumChannelId, botToken });
     return res.status(500).json({ message: 'Server configuration error: Missing Discord credentials' });
   }
 
-  // Format konten pesan untuk Discord
   const messageContent = `
 Territory yang digunakan : **${territory}**
 Jumlah uang taruhan : ${bet}
@@ -33,8 +27,8 @@ Tipe : ${type}
   `.trim();
 
   try {
-    console.log('Sending request to Discord API with:', { forumChannelId, messageContent });
-    const response = await fetch(`https://discord.com/api/v10/channels/${forumChannelId}/threads`, {
+    // 1️⃣ Buat thread
+    const threadResponse = await fetch(`https://discord.com/api/v10/channels/${forumChannelId}/threads`, {
       method: 'POST',
       headers: {
         Authorization: `Bot ${botToken}`,
@@ -43,18 +37,38 @@ Tipe : ${type}
       body: JSON.stringify({
         name: `Challenge: ${territory}`,
         auto_archive_duration: 1440, // 24 jam
-        message: { content: messageContent },
+        type: 11 // THREAD_PUBLIC
       }),
     });
 
-    const data = await response.json();
-    if (!response.ok) {
-      console.error('Discord API Error:', data);
-      return res.status(400).json({ message: 'Failed to create challenge', error: data });
+    if (!threadResponse.ok) {
+      const text = await threadResponse.text();
+      console.error('Discord Thread Error:', text);
+      return res.status(400).json({ message: 'Failed to create thread', error: text });
     }
 
-    console.log('Challenge created successfully:', data);
-    res.status(200).json({ message: 'Challenge created!', data });
+    const threadData = await threadResponse.json();
+
+    // 2️⃣ Kirim pesan ke thread
+    const messageResponse = await fetch(`https://discord.com/api/v10/channels/${threadData.id}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bot ${botToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: messageContent }),
+    });
+
+    if (!messageResponse.ok) {
+      const text = await messageResponse.text();
+      console.error('Discord Message Error:', text);
+      return res.status(400).json({ message: 'Failed to send message', error: text });
+    }
+
+    const messageData = await messageResponse.json();
+
+    res.status(200).json({ message: 'Challenge created!', thread: threadData, message: messageData });
+
   } catch (error) {
     console.error('Error in handler:', error);
     res.status(500).json({ message: 'Error creating challenge', error: error.message });
