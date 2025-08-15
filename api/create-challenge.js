@@ -3,7 +3,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { territory, bet, carType, nitrous, altRoad, type } = req.body;
+  const { territory, bet, carType, nitrous, altRoad, type } = req.body || {};
+
+  // Cek data wajib
+  if (!territory || !bet || !carType || !nitrous || !altRoad || !type) {
+    return res.status(400).json({ message: 'Incomplete data sent' });
+  }
 
   const forumChannelId = process.env.FORUM_CHANNEL_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
@@ -34,14 +39,29 @@ Tipe : ${type}
       }
     );
 
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return res.status(response.status).json({
+        message: 'Discord API returned non-JSON',
+        raw: text
+      });
+    }
 
     if (!response.ok) {
-      return res.status(400).json({ message: 'Failed to create challenge', error: data });
+      return res.status(response.status).json({
+        message: 'Failed to create challenge',
+        error: data
+      });
     }
 
     res.status(200).json({ message: 'Challenge created!', data });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating challenge', error: error.message });
+    res.status(500).json({
+      message: 'Error creating challenge',
+      error: error.message
+    });
   }
 }
