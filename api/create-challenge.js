@@ -5,6 +5,10 @@ export default async function handler(req, res) {
 
   const { territory, bet, carType, nitrous, altRoad, type } = req.body;
 
+  if (!territory || !bet || !carType || !nitrous || !altRoad || !type) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
   const forumChannelId = process.env.FORUM_CHANNEL_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
 
