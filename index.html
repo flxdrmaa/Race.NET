@@ -1,228 +1,495 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GTA SAMP Club – Cinematic Feed</title>
-  <meta name="description" content="Website club mobil GTA SAMP dengan intro sinematik ala 1917 + feed timeline." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Street.NET JGRP</title>
+  
+  <!-- Adsense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2084454135210602" crossorigin="anonymous"></script>
+  <meta name="google-adsense-account" content="ca-pub-2084454135210602">
+  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+  
   <style>
-    :root { --accent: #f5c84c; --accent-2: #df6c4f; }
-    html, body { height: 100%; }
-    body { font-family: 'Rajdhani', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; }
-    /* Cinematic overlays */
-    .vignette::after {
-      content: "";
-      position: absolute; inset: 0;
-      pointer-events: none;
-      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.8) 100%);
-      mix-blend-mode: multiply;
+    :root {
+      --default-zone-logo-size: 100px;
     }
-    .grain::before {
-      content: "";
-      position: absolute; inset: -50%;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="https://i.pinimg.com/1200x/a2/1c/8e/a21c8ea04de78f0903ad683fd384747a.jpg" width="120" height="120" viewBox="0 0 120 120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="120" height="120" filter="url(%23n)" opacity="0.04"/></svg>');
-      background-size: 120px 120px; animation: grain 8s steps(10) infinite;
-      pointer-events: none;
+
+    body{
+      margin:0;
+      background:#000;
+      font-family:Arial, sans-serif;
+      color:#fff;
+      overflow-x:hidden;
     }
-    @keyframes grain { 0%{transform:translate(0,0)} 10%{transform:translate(-5%,-10%)} 20%{transform:translate(-15%,-20%)} 30%{transform:translate(-5%,-10%)} 40%{transform:translate(-15%,-20%)} 50%{transform:translate(-5%,0)} 60%{transform:translate(-15%,10%)} 70%{transform:translate(-5%,0)} 80%{transform:translate(-15%,10%)} 90%{transform:translate(0,0)} 100%{transform:translate(0,0)} }
 
-    /* Slide panel */
-    .panel-enter { transform: translateX(100%); }
-    .panel-open { transform: translateX(0); }
-    .ease-soft { transition: transform .7s cubic-bezier(.22,.61,.36,1); }
-
-    /* Subtle hover underline */
-    .link-underline { position: relative; }
-    .link-underline::after {
-      content: ""; position: absolute; left: 0; bottom: -2px; height: 2px; width: 0; background: var(--accent);
-      transition: width .3s ease;
+    .map-container{
+      position:relative;
+      min-height:100vh;
+      width:100%;
+      overflow-x:hidden;
     }
-    .link-underline:hover::after { width: 100%; }
 
-    /* Parallax helpers */
-    .will-parallax { will-change: transform; }
-
-    /* Enhanced animations */
-    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-    /* Glow effect for buttons */
-    .glow-btn { position: relative; overflow: hidden; }
-    .glow-btn::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
+    .background-overlay{
+      position:fixed;
+      inset:0;
+      background:url('https://i.imgur.com/ne9vTRM.png') no-repeat center center;
+      background-size:cover;
+      opacity:.80;
+      z-index:0;
+      pointer-events:none;
+      width:100vw;
+      height:100vh;
     }
-    .glow-btn:hover::before { left: 100%; }
 
-    /* Blur effect for background when panel is open */
-    .content-blur { filter: blur(5px); transition: filter 0.7s ease; }
-    .content-blur-off { filter: none; transition: filter 0.7s ease; }
+    .topbar{
+      position:sticky;
+      top:0;
+      width:100%;
+      height:clamp(40px,10vw,50px);
+      background:rgba(0,0,0,.6);
+      color:#00ffcc;
+      font-size:clamp(12px,3vw,16px);
+      padding:clamp(8px,2vw,12px) clamp(10px,3vw,20px);
+      font-weight:bold;
+      letter-spacing:1px;
+      z-index:10;
+      display:flex;
+      align-items:center;
+    }
+    .topbar .purple{color:#800080;}
+    .topbar .green{color:#00ff00;}
 
-    /* Clickable card effect */
-    .clickable-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 4px 20px rgba(245, 200, 76, 0.3); }
+    .map-frame{
+      position:relative;
+      width:min(90vw,1200px);
+      margin:clamp(20px,5vw,60px) auto;
+      border:2px solid rgba(0,255,200,.3);
+      box-shadow:0 0 20px rgba(0,255,200,.1);
+      border-radius:20px;
+      background:#111;
+      overflow:hidden;
+      z-index:2;
+      aspect-ratio:1 / 1;
+    }
+    .map-frame img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:contain;
+    }
+
+    /* ZONES */
+    .zone {
+      position: absolute;
+      width: var(--default-zone-logo-size);
+      height: var(--default-zone-logo-size);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .zone:hover {
+      transform: scale(1.3);
+      z-index: 999;
+    }
+
+    .zone img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .zone:hover img{
+      transform:none !important;
+      box-shadow:0 0 8px #00ffcc80;
+    }
+
+    /* INFO BOX */
+    #info-box{
+      position:fixed;
+      top:50%;
+      right:clamp(10px,3vw,20px);
+      transform:translateY(-50%);
+      width:min(70vw,250px);
+      background:#0f1f1d;
+      border:2px solid #1b3d39;
+      padding:clamp(6px,1.5vw,8px);
+      color:#fff;
+      display:none;
+      border-radius:12px;
+      font-family:Arial, sans-serif;
+      z-index:20;
+      box-shadow:0 0 15px #00ffcc99;
+      opacity:0;
+    }
+    #info-box.active{
+      display:block;
+      animation:scaleFadeIn .5s ease-out forwards, neon-border 1.5s infinite ease-in-out;
+    }
+
+    @keyframes neon-border{
+      0%{box-shadow:0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;}
+      25%{box-shadow:0 0 10px #800080, 0 0 20px #00ff00, 0 0 25px #800080;}
+      50%{box-shadow:0 0 5px #00ff00, 0 0 15px #800080, 0 0 20px #00ff00;}
+      75%{box-shadow:0 0 10px #00ff00, 0 0 20px #800080, 0 0 25px #00ff00;}
+      100%{box-shadow:0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;}
+    }
+    @keyframes scaleFadeIn{
+      0%{opacity:0; transform:translateY(-50%) scale(.7);}
+      100%{opacity:1; transform:translateY(-50%) scale(1);}
+    }
+    @keyframes scaleFadeOut{
+      0%{opacity:1; transform:translateY(-50%) scale(1);}
+      100%{opacity:0; transform:translateY(-50%) scale(.7);}
+    }
+
+    #info-box .header{ display:flex; align-items:center; gap:clamp(8px,2vw,10px); justify-content:flex-start; }
+    #info-box .logo{ width:var(--info-box-logo-size, 40px); height:var(--info-box-logo-size, 40px); object-fit:contain; }
+    #info-box .title{ font-size:clamp(10px,2.5vw,12px); margin:0 auto; color:#bbb; text-align:center; flex-grow:1; }
+    #info-box .title h2{ margin:0; font-size:clamp(14px,3.5vw,16px); color:#fff200; }
+    #info-box .track-map{ width:100%; margin:clamp(8px,2vw,10px) 0; }
+    #info-box .track-map img{ width:100%; height:auto; object-fit:contain; border:1px solid #555; border-radius:8px; background:#111; max-height:clamp(100px,30vw,140px); }
+    #info-box .track-name{ font-weight:bold; font-size:clamp(12px,3vw,15px); text-align:center; border-top:1px solid #444; padding-top:6px; margin-top:6px; color:#aaffff; }
+    #info-box .track-details{ margin-top:5px; }
+    #info-box .track-details div{ display:flex; justify-content:space-between; font-size:clamp(11px,2.5vw,13px); padding:2px 0; }
+    #info-box .track-details span{ color:#ccc; }
+
+    /* --- TOMBOL CASHRUN & MODAL --- */
+    .cashrun-btn {
+      display: block; width: 100%; margin-top: 10px;
+      background: linear-gradient(90deg, #800080, #ff00ff);
+      border: 1px solid #fff; color: #fff; padding: 8px;
+      text-align: center; font-weight: bold; cursor: pointer;
+      border-radius: 8px; text-transform: uppercase; font-size: 12px;
+      transition: 0.3s;
+    }
+    .cashrun-btn:hover { background: linear-gradient(90deg, #ff00ff, #800080); box-shadow: 0 0 10px #ff00ff; }
+
+    /* Modal Styling */
+    #cashrun-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 1000;
+      display: none; justify-content: center; align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: #111; border: 2px solid #00ffcc; padding: 20px;
+      width: min(90%, 350px); border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.3); color: #fff;
+      animation: scaleFadeIn 0.3s ease;
+    }
+    .modal-content h3 { margin-top: 0; text-align: center; color: #00ffcc; text-transform: uppercase; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; color: #ccc; margin-bottom: 5px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 8px; background: #222; border: 1px solid #444;
+      color: #fff; border-radius: 5px; box-sizing: border-box; font-family: inherit;
+    }
+    .form-group textarea { resize: vertical; height: 60px; }
+    .modal-actions { display: flex; justify-content: space-between; gap: 10px; }
+    .btn-cancel { background: #555; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; flex: 1; }
+    .btn-send { background: #00ff00; color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; }
+
+    /* Media Queries Mobile */
+    @media (max-width:480px){
+      :root{ --default-zone-logo-size: clamp(20px, 5vw, 25px); }
+      .map-frame{ width:98vw; border-radius:10px; }
+      #info-box{
+        width:min(90vw,200px); top:auto; bottom:10px; right:50%; transform:translateX(50%);
+      }
+      #info-box.active{ animation:scaleFadeInMobile .5s ease-out forwards, neon-border 1.5s infinite ease-in-out; }
+      @keyframes scaleFadeInMobile{ 0%{opacity:0; transform:translateX(50%) scale(.7);} 100%{opacity:1; transform:translateX(50%) scale(1);} }
+    }
+
+    .audio-controls{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:30; }
+    .audio-controls button{ background:rgba(0,0,0,.6); color:#00ffcc; border:2px solid #1b3d39; border-radius:10px; padding:8px 16px; cursor:pointer; }
   </style>
 </head>
-<body class="bg-black text-white">
-  <!-- HERO / INTRO -->
-  <header id="hero" class="relative h-screen w-full overflow-hidden vignette grain select-none content-blur-off">
-    <video id="bgVideo" class="absolute inset-0 w-full h-full object-cover opacity-40" autoplay muted loop playsinline>
-      <source src="https://content1.avplayer.com/5f2063121d82c82557194737/videos/68235237ab167bad2f04aa23/6823523b1fa2f63bef01b284/video.mp4?AV_TAGID=667154240adfea1f9000b43a&pid=5f2063121d82c82557194737&cid=667150ff798732bf330cb5ad&AV_TEMPID=6823529b1569104d0d0275b8&AV_PUBLISHERID=5f2063121d82c82557194737&videoId=68235237ab167bad2f04aa23" type="video/mp4" />
-    </video>
-    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70"></div>
-    <div class="absolute top-0 left-0 right-0 z-20">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between text-sm">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-white/10 backdrop-blur will-parallax"></div>
-          <span class="tracking-widest text-white/70">KillSide Club</span>
+<body>
+  <amp-auto-ads type="adsense" data-ad-client="ca-pub-2084454135210602"></amp-auto-ads>
+  
+  <div class="map-container">
+    <div class="background-overlay"></div>
+    <div class="topbar">
+      <h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span></h2>
+    </div>
+
+    <!-- Main Map Frame -->
+    <div class="map-frame">
+      <img id="main-map" src="" alt="Main Map" loading="lazy"/>
+
+      <!-- Zones -->
+      <div class="zone" onclick="showInfo(1)" style="top:27.28%; left:11.68%;" data-info-logo-size="70px"><img src="" alt="Zone 1"></div>
+      <div class="zone" onclick="showInfo(2)" style="top:2.72%; left:17.33%;" data-info-logo-size="70px"><img src="" alt="Zone 2"></div>
+      <div class="zone" onclick="showInfo(3)" style="top:43.29%; left:2.47%;" data-info-logo-size="70px"><img src="" alt="Zone 3"></div>
+      <div class="zone" onclick="showInfo(4)" style="top:49.62%; left:13.11%;" data-info-logo-size="70px"><img src="" alt="Zone 4"></div>
+      <div class="zone" onclick="showInfo(5)" style="top:64.12%; left:25.31%;" data-info-logo-size="70px"><img src="" alt="Zone 5"></div>
+      <div class="zone" onclick="showInfo(6)" style="top:2.89%; left:82.71%;" data-info-logo-size="70px"><img src="" alt="Zone 6"></div>
+      <div class="zone" onclick="showInfo(7)" style="top:7.54%; left:75.47%;" data-info-logo-size="70px"><img src="" alt="Zone 7"></div>
+      <div class="zone" onclick="showInfo(8)" style="top:14.85%; left:78.94%;" data-info-logo-size="70px"><img src="" alt="Zone 8"></div>
+      <div class="zone" onclick="showInfo(9)" style="top:20.58%; left:87.65%;" data-info-logo-size="70px"><img src="" alt="Zone 9"></div>
+    </div>
+
+    <!-- Info Box -->
+    <div id="info-box">
+      <div class="header">
+        <img id="info-logo" class="logo" src="" alt="Club Logo"/>
+        <div class="title">
+          <p>Controlled By</p>
+          <h2 id="info-club">CLUB</h2>
         </div>
-        <button id="openPanelBtn" class="px-4 py-2 rounded-xl border border-white/20 hover:border-white/50 hover:bg-white/5 transition glow-btn">Menu</button>
       </div>
-    </div>
-    <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
-      <img id="clubLogo" src="https://i.pinimg.com/1200x/a2/1c/8e/a21c8ea04de78f0903ad683fd384747a.jpg" alt="Logo Club" class="w-40 h-40 md:w-52 md:h-52 rounded-full shadow-2xl ring-2 ring-white/10 hover:scale-105 transition will-parallax" />
-      <h1 class="mt-6 text-5xl md:text-6xl font-bold tracking-wide">KillSide</h1>
-      <p class="mt-2 text-white/70 max-w-xl">Lets Join With Us.</p>
-      <div class="absolute bottom-8 inset-x-0 flex justify-center">
-        <div class="text-white/60 text-xs tracking-widest animate-bounce">SCROLL</div>
+      <div class="track-map"><img id="info-track-map" src="" alt="Track Map"/></div>
+      <div class="track-name" id="info-track-name">Track Name</div>
+      <div class="track-details">
+        <div><span>Length</span><strong id="info-length">-</strong></div>
+        <div><span>Rounds</span><strong id="info-laps">-</strong></div>
+        <div><span>Record</span><strong id="info-record">-</strong></div>
+        <div><span>Cash</span><strong id="info-cash">-</strong></div>
       </div>
+      <!-- Tombol Cashrun -->
+      <button class="cashrun-btn" onclick="openCashrunModal()">⚔️ Start Cashrun</button>
     </div>
-  </header>
 
-  <!-- SLIDE PANEL MENU -->
-  <aside id="panel" class="fixed inset-y-0 right-0 w-full sm:w-[420px] bg-neutral-950/95 backdrop-blur-xl z-50 panel-enter ease-soft border-l border-white/10">
-    <div class="h-full flex flex-col">
-      <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-white/10"></div>
-          <span class="font-bold tracking-wider">Street Racers</span>
-        </div>
-        <button id="closePanelBtn" class="px-3 py-1 rounded-lg border border-white/20 hover:border-white/60 glow-btn">✕</button>
-      </div>
-      <nav class="p-6 space-y-4 text-xl">
-        <a href="#about" class="block link-underline" data-goto>About Us</a>
-        <a href="feed.html" class="block link-underline">Feed</a>
-        <a href="members.html" class="block link-underline">Members</a>
-        <a href="join.html" class="block link-underline">Join Us</a>
-      </nav>
-      <div class="mt-auto p-6 text-sm text-white/50">
-        <p>© 2025 Street Racers · GTA SAMP</p>
-      </div>
-    </div>
-  </aside>
+    <!-- Audio -->
+    <div class="audio-controls"><button id="playPauseBtn">Play Music</button></div>
+    <audio id="backgroundMusic" loop>
+      <source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg"/>
+    </audio>
+  </div>
 
-  <!-- ABOUT US SECTION -->
-  <section id="about" class="relative bg-[#0b0b0b] vignette content-blur-off">
-    <div class="max-w-4xl mx-auto px-4 py-16 text-center">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 fade-in">About Us</h2>
-      <p class="text-white/70 max-w-2xl mx-auto mb-8 fade-in" style="transition-delay: 0.2s;">
-        Street Racers adalah komunitas GTA SAMP yang berdedikasi untuk pecinta balap jalanan virtual. Kami menyatukan pengemudi terbaik, mengadakan event epik, dan membangun garasi penuh gaya. Bergabunglah dengan kami untuk merasakan adrenalin dan kebebasan di jalanan San Andreas!
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <a href="story.html" class="block bg-neutral-900/80 border border-white/10 rounded-2xl p-5 fade-in clickable-card" style="transition-delay: 0.4s;">
-          <h3 class="text-xl font-bold mb-2 link-underline">Story</h3>
-          <p class="text-white/60 text-sm">Kami adalah keluarga penggemar SAMP yang saling mendukung dan berbagi passion.</p>
-        </a>
-        <a href="events.html" class="block bg-neutral-900/80 border border-white/10 rounded-2xl p-5 fade-in clickable-card" style="transition-delay: 0.5s;">
-          <h3 class="text-xl font-bold mb-2 link-underline">Balapan Seru</h3>
-          <p class="text-white/60 text-sm">Dari sprint hingga drift, kami mengadakan balapan yang tak terlupakan.</p>
-        </a>
-        <a href="style.html" class="block bg-neutral-900/80 border border-white/10 rounded-2xl p-5 fade-in clickable-card" style="transition-delay: 0.6s;">
-          <h3 class="text-xl font-bold mb-2 link-underline">Gaya Jalanan</h3>
-          <p class="text-white/60 text-sm">Modifikasi mobil dan gaya sinematik yang bikin kamu standout di server.</p>
-        </a>
+  <!-- Modal Form Cashrun -->
+  <div id="cashrun-modal">
+    <div class="modal-content">
+      <h3>Cashrun Form</h3>
+      <div class="form-group">
+        <label>Your Club Name (Challenger):</label>
+        <input type="text" id="cr-attacker" placeholder="Ex: Street Racers">
+      </div>
+      <div class="form-group">
+        <label>Bet Amount:</label>
+        <input type="text" id="cr-amount" placeholder="$0">
+      </div>
+      <div class="form-group">
+        <label>Rules / Terms:</label>
+        <textarea id="cr-rules" placeholder="Ex: Clean race, no blocking, best of 3..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeCashrunModal()">Cancel</button>
+        <button class="btn-send" onclick="sendToDiscord()">Send Challenge</button>
       </div>
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-white/10 bg-black/60 content-blur-off">
-    <div class="max-w-6xl mx-auto px-4 py-8 text-white/50 text-sm flex items-center justify-between">
-      <div>© 2025 Street Racers – GTA SAMP</div>
-      <div class="flex gap-4">
-        <a href="#" class="hover:text-white link-underline">Discord</a>
-        <a href="#" class="hover:text-white link-underline">Instagram</a>
-      </div>
-    </div>
-  </footer>
+  </div>
 
   <script>
-    // Elements
-    const logo = document.getElementById('clubLogo');
-    const openPanelBtn = document.getElementById('openPanelBtn');
-    const closePanelBtn = document.getElementById('closePanelBtn');
-    const panel = document.getElementById('panel');
-    const blurElements = document.querySelectorAll('.content-blur-off');
+    // --- KONFIGURASI ---
+    const SHEETSON_API = "https://api.sheetson.com/v2/sheets/jgrp"; 
+    const SHEETSON_KEY = "RWV7ouHImJvD33guxGKYc2Xqxqy3nuenc8hp8L06xcT33W6AaVY2xLHqPQE";
+    const SPREADSHEET_ID = "1_A7elaDSa-dToh3R2eGH25Ghrd0AKqDHY_2Jj5-iogI"; 
+    
+    // GANTI LINK DI BAWAH DENGAN WEBHOOK DISCORD KAMU
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN";
 
-    // Helpers
-    const openPanel = () => {
-      panel.classList.replace('panel-enter', 'panel-open');
-      blurElements.forEach(el => el.classList.replace('content-blur-off', 'content-blur'));
+    // Data Awal (Track Map & Name Statis)
+    const zoneData = {
+      1: { club:"", logo:"", track:"https://i.imgur.com/cEKMybS.png", name:"Downtown", ownerDiscordId: "" },
+      2: { club:"", logo:"", track:"https://i.imgur.com/a4toW9I.png", name:"Tierra Robada", ownerDiscordId: "" },
+      3: { club:"", logo:"", track:"https://i.imgur.com/hlErEUV.png", name:"Ocean Flat", ownerDiscordId: "" },
+      4: { club:"", logo:"", track:"https://i.imgur.com/lR0BjGY.png", name:"Easter Bay", ownerDiscordId: "" },
+      5: { club:"", logo:"", track:"https://i.imgur.com/rAKyRxG.png", name:"Foster Valley", ownerDiscordId: "" },
+      6: { club:"", logo:"", track:"https://i.imgur.com/2aZpTcF.png", name:"Emerald Isle", ownerDiscordId: "" },
+      7: { club:"", logo:"", track:"https://i.imgur.com/2MG6n6Y.png", name:"Red Sands", ownerDiscordId: "" },
+      9: { club:"", logo:"", track:"https://i.imgur.com/4I5LTgq.png", name:"Linden Station", ownerDiscordId: "" },
+      8: { club:"", logo:"", track:"https://i.imgur.com/PeHliUG.png", name:"Old Venturas Strip", ownerDiscordId: "" },
     };
-    const closePanel = () => {
-      panel.classList.replace('panel-open', 'panel-enter');
-      blurElements.forEach(el => el.classList.replace('content-blur', 'content-blur-off'));
-    };
 
-    // Toggle panel
-    openPanelBtn && openPanelBtn.addEventListener('click', openPanel);
-    closePanelBtn && closePanelBtn.addEventListener('click', closePanel);
+    let currentZoneId = null;
 
-    // Logo click opens panel
-    logo?.addEventListener('click', openPanel);
+    // Fetch Data from Sheetson
+    fetch(SHEETSON_API, {
+      headers: { "Authorization": `Bearer ${SHEETSON_KEY}`, "X-Spreadsheet-Id": SPREADSHEET_ID },
+    })
+    .then(res => res.json())
+    .then(json => {
+      const data = json.results || json.data || json;
+      if (!Array.isArray(data)) return;
 
-    // Smooth scroll for #about
-    document.querySelectorAll('[data-goto]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = a.getAttribute('href');
-        const target = document.querySelector(id);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-          closePanel();
+      data.forEach(row => {
+        const zoneId = Number(row.Zone?.replace(/zone\s*/i, "")) || null;
+        if (!zoneId) return;
+
+        let cashFormatted = row.Cash;
+        if (cashFormatted) {
+          cashFormatted = String(cashFormatted).replace(/[^\d]/g, "");
+          cashFormatted = "$" + (parseInt(cashFormatted, 10) || 0).toLocaleString();
+        }
+
+        // Update data zona dengan ID Pemilik dari Sheet
+        if(zoneData[zoneId]) {
+          zoneData[zoneId].club = row.Owner || zoneData[zoneId].club;
+          zoneData[zoneId].ownerDiscordId = row.OwnerID || ""; // Mengambil kolom OwnerID
+          zoneData[zoneId].logo = row.LogoMap || zoneData[zoneId].logo;
+          zoneData[zoneId].length = row.Length || "-";
+          zoneData[zoneId].laps = row.Rounds || "-";
+          zoneData[zoneId].record = row.Record || "-";
+          zoneData[zoneId].cash = cashFormatted || "-";
+          
+          // Update gambar logo di map utama
+          const el = document.querySelector(`.zone[onclick="showInfo(${zoneId})"] img`);
+          if (el && row.LogoMap) el.src = row.LogoMap;
         }
       });
-    });
 
-    // Parallax on hero for subtle depth
-    const hero = document.getElementById('hero');
-    const parallaxEls = [document.getElementById('bgVideo'), document.getElementById('clubLogo')];
-    let rect;
-    const updateRect = () => rect = hero.getBoundingClientRect();
-    updateRect();
-    window.addEventListener('resize', updateRect);
+      // Update Main Map jika ada
+      const mainMapRow = data.find(r => r.MainMap);
+      if (mainMapRow) document.getElementById('main-map').src = mainMapRow.MainMap;
+    })
+    .catch(err => console.error("Sheet Error:", err));
 
-    hero.addEventListener('mousemove', (e) => {
-      const x = (e.clientX - rect.width / 2) / rect.width;
-      const y = (e.clientY - rect.height / 2) / rect.height;
-      parallaxEls[0].style.transform = `translate(${x * -10}px, ${y * -10}px) scale(1.02)`;
-      parallaxEls[1].style.transform = `translate(${x * 12}px, ${y * 12}px)`;
-    });
+    // Show Info Box
+    function showInfo(id){
+      currentZoneId = id;
+      const info = zoneData[id];
+      if(!info) return;
 
-    // Fade-in animations on scroll
-    const fadeEls = document.querySelectorAll('.fade-in');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    fadeEls.forEach(el => observer.observe(el));
+      const zone = document.querySelector(`.zone[onclick="showInfo(${id})"]`);
+      const infoLogoSize = zone?.dataset.infoLogoSize || '40px';
 
-    // Reduce motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      hero.removeEventListener('mousemove', () => {});
-      parallaxEls.forEach(el => el && (el.style.transform = 'none'));
-      fadeEls.forEach(el => el.classList.add('visible'));
-      blurElements.forEach(el => el.classList.remove('content-blur', 'content-blur-off'));
+      document.getElementById('info-logo').style.setProperty('--info-box-logo-size', infoLogoSize);
+      document.getElementById('info-logo').src = info.logo;
+      document.getElementById('info-club').textContent = info.club;
+      document.getElementById('info-track-map').src = info.track;
+      document.getElementById('info-track-name').textContent = info.name;
+      document.getElementById('info-length').textContent = info.length;
+      document.getElementById('info-laps').textContent = info.laps;
+      document.getElementById('info-record').textContent = info.record;
+      document.getElementById('info-cash').textContent = info.cash;
+
+      const box = document.getElementById('info-box');
+      box.classList.add('active');
     }
+
+    // Close Info Box
+    document.addEventListener('click', (e)=>{
+      const box = document.getElementById('info-box');
+      const zone = e.target.closest('.zone');
+      const modal = document.getElementById('cashrun-modal');
+      const btn = e.target.closest('.cashrun-btn');
+
+      // Jangan tutup jika klik di dalam box, zona, modal, atau tombol cashrun
+      if(!box.contains(e.target) && !zone && !modal.contains(e.target) && !btn){
+        closeInfo();
+      }
+    });
+
+    function closeInfo(){
+      const box = document.getElementById('info-box');
+      box.style.animation = 'scaleFadeOut .5s ease';
+      setTimeout(()=>{
+        box.classList.remove('active');
+        box.style.animation = '';
+      }, 500);
+    }
+
+    // --- MODAL & DISCORD LOGIC ---
+    function openCashrunModal() {
+      if(!currentZoneId) return;
+      const info = zoneData[currentZoneId];
+
+      // Auto-fill Amount
+      const cleanCash = info.cash.replace(/[$,.]/g, "") || "0"; 
+      document.getElementById('cr-amount').value = "$" + parseInt(cleanCash).toLocaleString(); 
+      
+      document.getElementById('cr-attacker').value = "";
+      document.getElementById('cr-rules').value = "";
+
+      document.getElementById('cashrun-modal').style.display = "flex";
+    }
+
+    function closeCashrunModal() {
+      document.getElementById('cashrun-modal').style.display = "none";
+    }
+
+    function sendToDiscord() {
+      if(!currentZoneId) return;
+
+      const info = zoneData[currentZoneId];
+      const attackerName = document.getElementById('cr-attacker').value;
+      const amount = document.getElementById('cr-amount').value;
+      const rules = document.getElementById('cr-rules').value;
+      const ownerName = info.club; 
+      const ownerRoleId = info.ownerDiscordId; // Ambil ID dari data Sheet
+
+      if(!attackerName || !amount) {
+        alert("Please fill in Club Name and Amount!");
+        return;
+      }
+
+      // Logic Tagging
+      let mentionText = `**${ownerName}**`; 
+      if (ownerRoleId && ownerRoleId.length > 5) {
+        mentionText = `<@&${ownerRoleId}>`; // Tag Role
+      }
+
+      const payload = {
+        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!`,
+        embeds: [
+          {
+            title: "⚔️ New Challenge Received",
+            color: 16711680,
+            fields: [
+              { name: "🛡️ Defender", value: ownerName, inline: true },
+              { name: "⚔️ Challenger", value: attackerName, inline: true },
+              { name: "📍 Territory", value: `${info.name} (Zone ${currentZoneId})` },
+              { name: "💰 Bet Amount", value: amount, inline: true },
+              { name: "📜 Rules", value: rules || "Standard Street Rules" }
+            ],
+            thumbnail: { url: info.logo },
+            footer: { text: "Street.NET JGRP System" },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if(response.ok) {
+          alert("Challenge sent successfully to Discord!");
+          closeCashrunModal();
+        } else {
+          alert("Failed to send. Check console.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error sending request.");
+      });
+    }
+
+    // Audio Control
+    const audio = document.getElementById('backgroundMusic');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    playPauseBtn.addEventListener('click', function(){
+      if(audio.paused){
+        audio.play().catch(err=>console.log(err));
+        playPauseBtn.textContent = 'Pause Music';
+      }else{
+        audio.pause();
+        playPauseBtn.textContent = 'Play Music';
+      }
+    });
   </script>
 </body>
 </html>
