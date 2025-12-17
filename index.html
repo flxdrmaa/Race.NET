@@ -5,152 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Street.NET JGRP</title>
   
-  <!-- Adsense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2084454135210602" crossorigin="anonymous"></script>
   <meta name="google-adsense-account" content="ca-pub-2084454135210602">
   <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
   
   <style>
-    :root {
-      --default-zone-logo-size: 100px;
-    }
+    :root { --default-zone-logo-size: 100px; }
+    body{ margin:0; background:#000; font-family:Arial, sans-serif; color:#fff; overflow-x:hidden; }
+    .map-container{ position:relative; min-height:100vh; width:100%; overflow-x:hidden; }
+    .background-overlay{ position:fixed; inset:0; background:url('https://i.imgur.com/ne9vTRM.png') no-repeat center center; background-size:cover; opacity:.80; z-index:0; pointer-events:none; width:100vw; height:100vh; }
+    .topbar{ position:sticky; top:0; width:100%; height:clamp(40px,10vw,50px); background:rgba(0,0,0,.6); color:#00ffcc; font-size:clamp(12px,3vw,16px); padding:clamp(8px,2vw,12px) clamp(10px,3vw,20px); font-weight:bold; letter-spacing:1px; z-index:10; display:flex; align-items:center; }
+    .topbar .purple{color:#800080;} .topbar .green{color:#00ff00;}
+    .map-frame{ position:relative; width:min(90vw,1200px); margin:clamp(20px,5vw,60px) auto; border:2px solid rgba(0,255,200,.3); box-shadow:0 0 20px rgba(0,255,200,.1); border-radius:20px; background:#111; overflow:hidden; z-index:2; aspect-ratio:1 / 1; }
+    .map-frame img{ width:100%; height:100%; display:block; object-fit:contain; }
+    
+    .zone { position: absolute; width: var(--default-zone-logo-size); height: var(--default-zone-logo-size); cursor: pointer; transition: transform 0.3s ease; animation: pulse 2s infinite ease-in-out; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    .zone:hover { transform: scale(1.3); z-index: 999; }
+    .zone img { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; }
+    .zone:hover img{ transform:none !important; box-shadow:0 0 8px #00ffcc80; }
 
-    body{
-      margin:0;
-      background:#000;
-      font-family:Arial, sans-serif;
-      color:#fff;
-      overflow-x:hidden;
-    }
-
-    .map-container{
-      position:relative;
-      min-height:100vh;
-      width:100%;
-      overflow-x:hidden;
-    }
-
-    .background-overlay{
-      position:fixed;
-      inset:0;
-      background:url('https://i.imgur.com/ne9vTRM.png') no-repeat center center;
-      background-size:cover;
-      opacity:.80;
-      z-index:0;
-      pointer-events:none;
-      width:100vw;
-      height:100vh;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      width:100%;
-      height:clamp(40px,10vw,50px);
-      background:rgba(0,0,0,.6);
-      color:#00ffcc;
-      font-size:clamp(12px,3vw,16px);
-      padding:clamp(8px,2vw,12px) clamp(10px,3vw,20px);
-      font-weight:bold;
-      letter-spacing:1px;
-      z-index:10;
-      display:flex;
-      align-items:center;
-    }
-    .topbar .purple{color:#800080;}
-    .topbar .green{color:#00ff00;}
-
-    .map-frame{
-      position:relative;
-      width:min(90vw,1200px);
-      margin:clamp(20px,5vw,60px) auto;
-      border:2px solid rgba(0,255,200,.3);
-      box-shadow:0 0 20px rgba(0,255,200,.1);
-      border-radius:20px;
-      background:#111;
-      overflow:hidden;
-      z-index:2;
-      aspect-ratio:1 / 1;
-    }
-    .map-frame img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:contain;
-    }
-
-    /* ZONES */
-    .zone {
-      position: absolute;
-      width: var(--default-zone-logo-size);
-      height: var(--default-zone-logo-size);
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      animation: pulse 2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-
-    .zone:hover {
-      transform: scale(1.3);
-      z-index: 999;
-    }
-
-    .zone img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      position: absolute;
-      top: 0; left: 0;
-    }
-    .zone:hover img{
-      transform:none !important;
-      box-shadow:0 0 8px #00ffcc80;
-    }
-
-    /* INFO BOX */
-    #info-box{
-      position:fixed;
-      top:50%;
-      right:clamp(10px,3vw,20px);
-      transform:translateY(-50%);
-      width:min(70vw,250px);
-      background:#0f1f1d;
-      border:2px solid #1b3d39;
-      padding:clamp(6px,1.5vw,8px);
-      color:#fff;
-      display:none;
-      border-radius:12px;
-      font-family:Arial, sans-serif;
-      z-index:20;
-      box-shadow:0 0 15px #00ffcc99;
-      opacity:0;
-    }
-    #info-box.active{
-      display:block;
-      animation:scaleFadeIn .5s ease-out forwards, neon-border 1.5s infinite ease-in-out;
-    }
-
-    @keyframes neon-border{
-      0%{box-shadow:0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;}
-      25%{box-shadow:0 0 10px #800080, 0 0 20px #00ff00, 0 0 25px #800080;}
-      50%{box-shadow:0 0 5px #00ff00, 0 0 15px #800080, 0 0 20px #00ff00;}
-      75%{box-shadow:0 0 10px #00ff00, 0 0 20px #800080, 0 0 25px #00ff00;}
-      100%{box-shadow:0 0 5px #800080, 0 0 10px #800080, 0 0 15px #00ff00;}
-    }
-    @keyframes scaleFadeIn{
-      0%{opacity:0; transform:translateY(-50%) scale(.7);}
-      100%{opacity:1; transform:translateY(-50%) scale(1);}
-    }
-    @keyframes scaleFadeOut{
-      0%{opacity:1; transform:translateY(-50%) scale(1);}
-      100%{opacity:0; transform:translateY(-50%) scale(.7);}
-    }
-
+    #info-box{ position:fixed; top:50%; right:clamp(10px,3vw,20px); transform:translateY(-50%); width:min(70vw,250px); background:#0f1f1d; border:2px solid #1b3d39; padding:clamp(6px,1.5vw,8px); color:#fff; display:none; border-radius:12px; font-family:Arial, sans-serif; z-index:20; box-shadow:0 0 15px #00ffcc99; opacity:0; }
+    #info-box.active{ display:block; animation:scaleFadeIn .5s ease-out forwards, neon-border 1.5s infinite ease-in-out; }
+    @keyframes scaleFadeIn{ 0%{opacity:0; transform:translateY(-50%) scale(.7);} 100%{opacity:1; transform:translateY(-50%) scale(1);} }
+    @keyframes scaleFadeOut{ 0%{opacity:1; transform:translateY(-50%) scale(1);} 100%{opacity:0; transform:translateY(-50%) scale(.7);} }
+    
     #info-box .header{ display:flex; align-items:center; gap:clamp(8px,2vw,10px); justify-content:flex-start; }
     #info-box .logo{ width:var(--info-box-logo-size, 40px); height:var(--info-box-logo-size, 40px); object-fit:contain; }
     #info-box .title{ font-size:clamp(10px,2.5vw,12px); margin:0 auto; color:#bbb; text-align:center; flex-grow:1; }
@@ -162,53 +41,39 @@
     #info-box .track-details div{ display:flex; justify-content:space-between; font-size:clamp(11px,2.5vw,13px); padding:2px 0; }
     #info-box .track-details span{ color:#ccc; }
 
-    /* --- TOMBOL CASHRUN & MODAL --- */
-    .cashrun-btn {
-      display: block; width: 100%; margin-top: 10px;
-      background: linear-gradient(90deg, #800080, #ff00ff);
-      border: 1px solid #fff; color: #fff; padding: 8px;
-      text-align: center; font-weight: bold; cursor: pointer;
-      border-radius: 8px; text-transform: uppercase; font-size: 12px;
-      transition: 0.3s;
-    }
-    .cashrun-btn:hover { background: linear-gradient(90deg, #ff00ff, #800080); box-shadow: 0 0 10px #ff00ff; }
+    /* TOMBOL KHUSUS */
+    .cashrun-btn { display: block; width: 100%; margin-top: 10px; border: 1px solid #fff; color: #fff; padding: 8px; text-align: center; font-weight: bold; cursor: pointer; border-radius: 8px; text-transform: uppercase; font-size: 12px; transition: 0.3s; }
+    
+    /* Tombol Login (Warna Biru Discord) */
+    .login-btn { background: #5865F2; display:block; }
+    .login-btn:hover { background: #4752C4; }
 
-    /* Modal Styling */
-    #cashrun-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); z-index: 1000;
-      display: none; justify-content: center; align-items: center;
-      backdrop-filter: blur(5px);
-    }
-    .modal-content {
-      background: #111; border: 2px solid #00ffcc; padding: 20px;
-      width: min(90%, 350px); border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.3); color: #fff;
-      animation: scaleFadeIn 0.3s ease;
-    }
+    /* Tombol Attack (Warna Ungu Gradient - Hidden Default) */
+    .attack-btn { background: linear-gradient(90deg, #800080, #ff00ff); display:none; }
+    .attack-btn:hover { background: linear-gradient(90deg, #ff00ff, #800080); box-shadow: 0 0 10px #ff00ff; }
+
+    /* User Profile Info di InfoBox */
+    #user-status { font-size: 10px; color: #aaa; text-align: center; margin-top: 5px; font-style: italic; }
+    #user-status span { color: #00ff00; font-weight: bold; }
+
+    #cashrun-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+    .modal-content { background: #111; border: 2px solid #00ffcc; padding: 20px; width: min(90%, 350px); border-radius: 15px; box-shadow: 0 0 20px rgba(0, 255, 204, 0.3); color: #fff; animation: scaleFadeIn 0.3s ease; }
     .modal-content h3 { margin-top: 0; text-align: center; color: #00ffcc; text-transform: uppercase; }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; color: #ccc; margin-bottom: 5px; }
-    .form-group input, .form-group textarea {
-      width: 100%; padding: 8px; background: #222; border: 1px solid #444;
-      color: #fff; border-radius: 5px; box-sizing: border-box; font-family: inherit;
-    }
+    .form-group input, .form-group textarea { width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
     .form-group textarea { resize: vertical; height: 60px; }
     .modal-actions { display: flex; justify-content: space-between; gap: 10px; }
     .btn-cancel { background: #555; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; flex: 1; }
     .btn-send { background: #00ff00; color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; }
 
-    /* Media Queries Mobile */
     @media (max-width:480px){
       :root{ --default-zone-logo-size: clamp(20px, 5vw, 25px); }
       .map-frame{ width:98vw; border-radius:10px; }
-      #info-box{
-        width:min(90vw,200px); top:auto; bottom:10px; right:50%; transform:translateX(50%);
-      }
+      #info-box{ width:min(90vw,200px); top:auto; bottom:10px; right:50%; transform:translateX(50%); }
       #info-box.active{ animation:scaleFadeInMobile .5s ease-out forwards, neon-border 1.5s infinite ease-in-out; }
       @keyframes scaleFadeInMobile{ 0%{opacity:0; transform:translateX(50%) scale(.7);} 100%{opacity:1; transform:translateX(50%) scale(1);} }
     }
-
     .audio-controls{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:30; }
     .audio-controls button{ background:rgba(0,0,0,.6); color:#00ffcc; border:2px solid #1b3d39; border-radius:10px; padding:8px 16px; cursor:pointer; }
   </style>
@@ -218,14 +83,10 @@
   
   <div class="map-container">
     <div class="background-overlay"></div>
-    <div class="topbar">
-      <h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span></h2>
-    </div>
+    <div class="topbar"><h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span></h2></div>
 
-    <!-- Main Map Frame -->
     <div class="map-frame">
       <img id="main-map" src="" alt="Main Map" loading="lazy"/>
-
       <!-- Zones -->
       <div class="zone" onclick="showInfo(1)" style="top:27.28%; left:11.68%;" data-info-logo-size="70px"><img src="" alt="Zone 1"></div>
       <div class="zone" onclick="showInfo(2)" style="top:2.72%; left:17.33%;" data-info-logo-size="70px"><img src="" alt="Zone 2"></div>
@@ -242,10 +103,7 @@
     <div id="info-box">
       <div class="header">
         <img id="info-logo" class="logo" src="" alt="Club Logo"/>
-        <div class="title">
-          <p>Controlled By</p>
-          <h2 id="info-club">CLUB</h2>
-        </div>
+        <div class="title"><p>Controlled By</p><h2 id="info-club">CLUB</h2></div>
       </div>
       <div class="track-map"><img id="info-track-map" src="" alt="Track Map"/></div>
       <div class="track-name" id="info-track-name">Track Name</div>
@@ -255,21 +113,27 @@
         <div><span>Record</span><strong id="info-record">-</strong></div>
         <div><span>Cash</span><strong id="info-cash">-</strong></div>
       </div>
-      <!-- Tombol Cashrun -->
-      <button class="cashrun-btn" onclick="openCashrunModal()">⚔️ Start Cashrun</button>
+      
+      <!-- Tombol Login (Default Muncul) -->
+      <button id="btn-login" class="cashrun-btn login-btn" onclick="loginDiscord()">🔐 Login to Verify</button>
+      
+      <!-- Tombol Attack (Default Hilang) -->
+      <button id="btn-attack" class="cashrun-btn attack-btn" onclick="openCashrunModal()">⚔️ Start Cashrun</button>
+      
+      <div id="user-status">Not logged in</div>
     </div>
 
-    <!-- Audio -->
     <div class="audio-controls"><button id="playPauseBtn">Play Music</button></div>
-    <audio id="backgroundMusic" loop>
-      <source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg"/>
-    </audio>
+    <audio id="backgroundMusic" loop><source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg"/></audio>
   </div>
 
-  <!-- Modal Form Cashrun -->
   <div id="cashrun-modal">
     <div class="modal-content">
       <h3>Cashrun Form</h3>
+      <div class="form-group">
+        <label>Authenticated As:</label>
+        <input type="text" id="cr-verified-user" disabled style="color:#00ff00; border-color:#00ff00; cursor:not-allowed;">
+      </div>
       <div class="form-group">
         <label>Your Club Name (Challenger):</label>
         <input type="text" id="cr-attacker" placeholder="Ex: Street Racers">
@@ -280,7 +144,7 @@
       </div>
       <div class="form-group">
         <label>Rules / Terms:</label>
-        <textarea id="cr-rules" placeholder="Ex: Clean race, no blocking, best of 3..."></textarea>
+        <textarea id="cr-rules" placeholder="Ex: Clean race, no blocking..."></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeCashrunModal()">Cancel</button>
@@ -289,34 +153,83 @@
     </div>
   </div>
 
-  <!-- ================= WIDGETBOT CHAT ================= -->
-  <!-- GANTI 'server' dan 'channel' DENGAN ID YANG KAMU DAPAT DARI PERINTAH ??crate -->
-  <script src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3" async defer>
-    new Crate({
-      server: '1370728226137047060',  // <-- ID SERVER DISCORD JGRP KAMU
-      channel: '1370728232906653781', // <-- ID CHANNEL #zona-negotiation
-      
-      color: '#00ffcc', // Warna tombol chat (Hijau Neon)
-      notifications: true,
-      indicator: true,
-      location: ['bottom', 'right']
-    });
-  </script>
-  <!-- ================================================== -->
-
   <script>
-    // --- KONFIGURASI ---
+    // --- KONFIGURASI KEAMANAN (WAJIB ISI) ---
+    const DISCORD_CLIENT_ID = "MASUKKAN_CLIENT_ID_DARI_DEVELOPER_PORTAL"; // <-- GANTI INI
+    const DISCORD_REDIRECT_URI = "https://flxdrmaa.github.io/Race.NET/"; // <-- GANTI DENGAN URL WEB KAMU YG ASLI
+    
+    // SERVER & ROLE YANG DIBOLEHKAN KLIK
+    const DISCORD_SERVER_ID = "1370728226137047060"; 
+    const ALLOWED_ROLE_ID = "MASUKKAN_ID_ROLE_YG_BOLEH_KLIK"; // <-- GANTI DENGAN ROLE ID (Misal Role Ketua/Member Verified)
+
     const SHEETSON_API = "https://api.sheetson.com/v2/sheets/jgrp"; 
     const SHEETSON_KEY = "RWV7ouHImJvD33guxGKYc2Xqxqy3nuenc8hp8L06xcT33W6AaVY2xLHqPQE";
     const SPREADSHEET_ID = "1_A7elaDSa-dToh3R2eGH25Ghrd0AKqDHY_2Jj5-iogI"; 
-    
-    // GANTI WEBHOOK DISCORD KAMU
     const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1450862700736413887/pScPkMGmyFiHTQpZMBB9_tGS14pgjtxQ6cyhHqq7j0aOOgwpvJVQLoIQeu8hDm4ZUNZZ";
-
-    // MASUKKAN ID CHANNEL CHAT YANG SAMA DENGAN WIDGET DI ATAS (UNTUK LINK DI PESAN WEBHOOK)
     const CHAT_CHANNEL_ID = "1370728232906653781";
 
-    // Data Awal
+    let currentZoneId = null;
+    let currentUser = null; // Menyimpan data user yg login
+
+    // --- 1. OAUTH2 DISCORD LOGIC ---
+    
+    // Cek saat website dibuka, apakah ada token di URL?
+    window.onload = () => {
+      const fragment = new URLSearchParams(window.location.hash.slice(1));
+      const accessToken = fragment.get('access_token');
+
+      if (accessToken) {
+        // Jika ada token, verifikasi ke Discord
+        fetchDiscordUser(accessToken);
+        // Hapus token dari URL biar bersih
+        history.replaceState(null, null, ' ');
+      }
+    };
+
+    function loginDiscord() {
+      // Redirect ke Discord Login
+      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify%20guilds.members.read`;
+      window.location.href = authUrl;
+    }
+
+    function fetchDiscordUser(token) {
+      document.getElementById('user-status').textContent = "Verifying role...";
+      
+      // Ambil data member dari Server JGRP kamu
+      fetch(`https://discord.com/api/users/@me/guilds/${DISCORD_SERVER_ID}/member`, {
+        headers: { authorization: `Bearer ${token}` }
+      })
+      .then(res => {
+        if(!res.ok) throw new Error("Not a member or Scope Error");
+        return res.json();
+      })
+      .then(member => {
+        // Cek Role
+        if(member.roles && member.roles.includes(ALLOWED_ROLE_ID)) {
+          // SUKSES: Role Cocok
+          currentUser = member.user;
+          enableAttackButton();
+        } else {
+          // GAGAL: Tidak punya role
+          alert("Access Denied! You do not have the required role to start a Cashrun.");
+          document.getElementById('user-status').innerHTML = `<span style="color:red">Access Denied (Role Missing)</span>`;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Verification Failed. Are you in the JGRP Discord Server?");
+        document.getElementById('user-status').textContent = "Verification Failed";
+      });
+    }
+
+    function enableAttackButton() {
+      document.getElementById('btn-login').style.display = 'none';
+      document.getElementById('btn-attack').style.display = 'block';
+      document.getElementById('user-status').innerHTML = `Logged in as: <span>${currentUser.username}</span>`;
+      document.getElementById('cr-verified-user').value = currentUser.username;
+    }
+
+    // --- 2. DATA & MAP LOGIC ---
     const zoneData = {
       1: { club:"", logo:"", track:"https://i.imgur.com/cEKMybS.png", name:"Downtown", ownerDiscordId: "" },
       2: { club:"", logo:"", track:"https://i.imgur.com/a4toW9I.png", name:"Tierra Robada", ownerDiscordId: "" },
@@ -329,9 +242,6 @@
       8: { club:"", logo:"", track:"https://i.imgur.com/PeHliUG.png", name:"Old Venturas Strip", ownerDiscordId: "" },
     };
 
-    let currentZoneId = null;
-
-    // Fetch Data
     fetch(SHEETSON_API, {
       headers: { "Authorization": `Bearer ${SHEETSON_KEY}`, "X-Spreadsheet-Id": SPREADSHEET_ID },
     })
@@ -339,17 +249,14 @@
     .then(json => {
       const data = json.results || json.data || json;
       if (!Array.isArray(data)) return;
-
       data.forEach(row => {
         const zoneId = Number(row.Zone?.replace(/zone\s*/i, "")) || null;
         if (!zoneId) return;
-
         let cashFormatted = row.Cash;
         if (cashFormatted) {
           cashFormatted = String(cashFormatted).replace(/[^\d]/g, "");
           cashFormatted = "$" + (parseInt(cashFormatted, 10) || 0).toLocaleString();
         }
-
         if(zoneData[zoneId]) {
           zoneData[zoneId].club = row.Owner || zoneData[zoneId].club;
           zoneData[zoneId].ownerDiscordId = row.OwnerID || "";
@@ -358,26 +265,20 @@
           zoneData[zoneId].laps = row.Rounds || "-";
           zoneData[zoneId].record = row.Record || "-";
           zoneData[zoneId].cash = cashFormatted || "-";
-          
           const el = document.querySelector(`.zone[onclick="showInfo(${zoneId})"] img`);
           if (el && row.LogoMap) el.src = row.LogoMap;
         }
       });
-
       const mainMapRow = data.find(r => r.MainMap);
       if (mainMapRow) document.getElementById('main-map').src = mainMapRow.MainMap;
-    })
-    .catch(err => console.error("Sheet Error:", err));
+    });
 
-    // Show Info Box
     function showInfo(id){
       currentZoneId = id;
       const info = zoneData[id];
       if(!info) return;
-
       const zone = document.querySelector(`.zone[onclick="showInfo(${id})"]`);
       const infoLogoSize = zone?.dataset.infoLogoSize || '40px';
-
       document.getElementById('info-logo').style.setProperty('--info-box-logo-size', infoLogoSize);
       document.getElementById('info-logo').src = info.logo;
       document.getElementById('info-club').textContent = info.club;
@@ -387,52 +288,40 @@
       document.getElementById('info-laps').textContent = info.laps;
       document.getElementById('info-record').textContent = info.record;
       document.getElementById('info-cash').textContent = info.cash;
-
-      const box = document.getElementById('info-box');
-      box.classList.add('active');
+      document.getElementById('info-box').classList.add('active');
     }
 
-    // Close Info Box
     document.addEventListener('click', (e)=>{
       const box = document.getElementById('info-box');
       const zone = e.target.closest('.zone');
       const modal = document.getElementById('cashrun-modal');
       const btn = e.target.closest('.cashrun-btn');
-
-      if(!box.contains(e.target) && !zone && !modal.contains(e.target) && !btn){
-        closeInfo();
-      }
+      if(!box.contains(e.target) && !zone && !modal.contains(e.target) && !btn) closeInfo();
     });
 
     function closeInfo(){
       const box = document.getElementById('info-box');
       box.style.animation = 'scaleFadeOut .5s ease';
-      setTimeout(()=>{
-        box.classList.remove('active');
-        box.style.animation = '';
-      }, 500);
+      setTimeout(()=>{ box.classList.remove('active'); box.style.animation = ''; }, 500);
     }
 
-    // --- MODAL & DISCORD LOGIC ---
     function openCashrunModal() {
+      if(!currentUser) { alert("Please Login First!"); return; }
       if(!currentZoneId) return;
       const info = zoneData[currentZoneId];
-
-      const cleanCash = info.cash.replace(/[$,.]/g, "") || "0"; 
+      let rawCash = info.cash;
+      if (rawCash === undefined || rawCash === null) rawCash = "0";
+      const cleanCash = String(rawCash).replace(/[^\d]/g, "") || "0"; 
       document.getElementById('cr-amount').value = "$" + parseInt(cleanCash).toLocaleString(); 
       document.getElementById('cr-attacker').value = "";
       document.getElementById('cr-rules').value = "";
-
       document.getElementById('cashrun-modal').style.display = "flex";
     }
 
-    function closeCashrunModal() {
-      document.getElementById('cashrun-modal').style.display = "none";
-    }
+    function closeCashrunModal() { document.getElementById('cashrun-modal').style.display = "none"; }
 
     function sendToDiscord() {
-      if(!currentZoneId) return;
-
+      if(!currentZoneId || !currentUser) return;
       const info = zoneData[currentZoneId];
       const attackerName = document.getElementById('cr-attacker').value;
       const amount = document.getElementById('cr-amount').value;
@@ -440,70 +329,48 @@
       const ownerName = info.club; 
       const ownerRoleId = info.ownerDiscordId;
 
-      if(!attackerName || !amount) {
-        alert("Please fill in Club Name and Amount!");
-        return;
-      }
+      if(!attackerName || !amount) { alert("Please fill details!"); return; }
 
       let mentionText = `**${ownerName}**`; 
-      if (ownerRoleId && ownerRoleId.length > 5) {
-        mentionText = `<@&${ownerRoleId}>`; 
-      }
+      if (ownerRoleId && ownerRoleId.length > 5) mentionText = `<@&${ownerRoleId}>`; 
 
-      // Payload Update: Memberitahu Discord untuk membalas di Channel Chat
       const payload = {
-        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!\n\n💬 **Discussion / Negotiation:** <#${CHAT_CHANNEL_ID}> (Reply here to chat with website user)`,
+        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!\n\nUser **${currentUser.username}** (Verified) has initiated this challenge.\n💬 **Discussion:** Please open Discord <#${CHAT_CHANNEL_ID}> to negotiate.`,
         embeds: [
           {
             title: "⚔️ New Challenge Received",
             color: 16711680,
             fields: [
               { name: "🛡️ Defender", value: ownerName, inline: true },
-              { name: "⚔️ Challenger", value: attackerName, inline: true },
+              { name: "⚔️ Challenger Club", value: attackerName, inline: true },
+              { name: "👤 Representative", value: currentUser.username + ` (ID: ${currentUser.id})` },
               { name: "📍 Territory", value: `${info.name} (Zone ${currentZoneId})` },
               { name: "💰 Bet Amount", value: amount, inline: true },
               { name: "📜 Rules", value: rules || "Standard Street Rules" }
             ],
             thumbnail: { url: info.logo },
-            footer: { text: "Street.NET JGRP System • Check website chat" },
+            image: { url: info.track },
+            footer: { text: "Street.NET Secure System" },
             timestamp: new Date().toISOString()
           }
         ]
       };
 
       fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       })
       .then(response => {
-        if(response.ok) {
-          alert("Challenge sent! Please open the CHAT BUBBLE (bottom right) to negotiate.");
-          closeCashrunModal();
-        } else {
-          alert("Failed to send. Check console.");
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Error sending request.");
+        if(response.ok) { alert("Challenge Sent!"); closeCashrunModal(); }
+        else { alert("Failed to send."); }
       });
     }
 
-    // Audio Control
     const audio = document.getElementById('backgroundMusic');
     const playPauseBtn = document.getElementById('playPauseBtn');
     playPauseBtn.addEventListener('click', function(){
-      if(audio.paused){
-        audio.play().catch(err=>console.log(err));
-        playPauseBtn.textContent = 'Pause Music';
-      }else{
-        audio.pause();
-        playPauseBtn.textContent = 'Play Music';
-      }
+      if(audio.paused){ audio.play().catch(console.log); playPauseBtn.textContent = 'Pause Music'; }
+      else{ audio.pause(); playPauseBtn.textContent = 'Play Music'; }
     });
   </script>
 </body>
 </html>
-
-
