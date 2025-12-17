@@ -16,6 +16,7 @@
     .background-overlay{ position:fixed; inset:0; background:url('https://i.imgur.com/ne9vTRM.png') no-repeat center center; background-size:cover; opacity:.80; z-index:0; pointer-events:none; width:100vw; height:100vh; }
     .topbar{ position:sticky; top:0; width:100%; height:clamp(40px,10vw,50px); background:rgba(0,0,0,.6); color:#00ffcc; font-size:clamp(12px,3vw,16px); padding:clamp(8px,2vw,12px) clamp(10px,3vw,20px); font-weight:bold; letter-spacing:1px; z-index:10; display:flex; align-items:center; }
     .topbar .purple{color:#800080;} .topbar .green{color:#00ff00;}
+    
     .map-frame{ position:relative; width:min(90vw,1200px); margin:clamp(20px,5vw,60px) auto; border:2px solid rgba(0,255,200,.3); box-shadow:0 0 20px rgba(0,255,200,.1); border-radius:20px; background:#111; overflow:hidden; z-index:2; aspect-ratio:1 / 1; }
     .map-frame img{ width:100%; height:100%; display:block; object-fit:contain; }
     
@@ -44,15 +45,12 @@
     /* TOMBOL KHUSUS */
     .cashrun-btn { display: block; width: 100%; margin-top: 10px; border: 1px solid #fff; color: #fff; padding: 8px; text-align: center; font-weight: bold; cursor: pointer; border-radius: 8px; text-transform: uppercase; font-size: 12px; transition: 0.3s; }
     
-    /* Tombol Login (Warna Biru Discord) */
     .login-btn { background: #5865F2; display:block; }
     .login-btn:hover { background: #4752C4; }
 
-    /* Tombol Attack (Warna Ungu Gradient - Hidden Default) */
     .attack-btn { background: linear-gradient(90deg, #800080, #ff00ff); display:none; }
     .attack-btn:hover { background: linear-gradient(90deg, #ff00ff, #800080); box-shadow: 0 0 10px #ff00ff; }
 
-    /* User Profile Info di InfoBox */
     #user-status { font-size: 10px; color: #aaa; text-align: center; margin-top: 5px; font-style: italic; }
     #user-status span { color: #00ff00; font-weight: bold; }
 
@@ -154,13 +152,10 @@
   </div>
 
   <script>
-    // --- KONFIGURASI KEAMANAN (WAJIB ISI) ---
-    const DISCORD_CLIENT_ID = "1375477106750001234"; // <-- GANTI INI
-    const DISCORD_REDIRECT_URI = "https://flxdrmaa.github.io/Race.NET"; // <-- GANTI DENGAN URL WEB KAMU YG ASLI
-    
-    // SERVER & ROLE YANG DIBOLEHKAN KLIK
-    const DISCORD_SERVER_ID = "1370728226137047060"; 
-    const ALLOWED_ROLE_ID = "1370728226175062132"; // <-- GANTI DENGAN ROLE ID (Misal Role Ketua/Member Verified)
+    // --- KONFIGURASI KEAMANAN ---
+    const DISCORD_CLIENT_ID = "1375477106750001234"; // ID APLIKASI
+    const DISCORD_SERVER_ID = "1370728226137047060"; // ID SERVER JGRP
+    const ALLOWED_ROLE_ID = "1370728226175062132"; // Contoh: "123456789012345678"
 
     const SHEETSON_API = "https://api.sheetson.com/v2/sheets/jgrp"; 
     const SHEETSON_KEY = "RWV7ouHImJvD33guxGKYc2Xqxqy3nuenc8hp8L06xcT33W6AaVY2xLHqPQE";
@@ -169,56 +164,62 @@
     const CHAT_CHANNEL_ID = "1370728232906653781";
 
     let currentZoneId = null;
-    let currentUser = null; // Menyimpan data user yg login
+    let currentUser = null; 
 
-    // --- 1. OAUTH2 DISCORD LOGIC ---
-    
-    // Cek saat website dibuka, apakah ada token di URL?
+    // --- LOGIC OTOMATIS REDIRECT URI ---
+    // Ini mendeteksi URL website saat ini, jadi aman untuk localhost maupun github.io
+    // PASTIKAN SEMUA VARIABEL INI SUDAH DIDAFTARKAN DI DISCORD DEVELOPER PORTAL
+    const currentUrl = window.location.href.split('#')[0]; // Ambil URL tanpa hash
+    const DISCORD_REDIRECT_URI = currentUrl.endsWith('/') ? currentUrl : currentUrl + '/';
+
+    // 1. CEK TOKEN SAAT WEB DIBUKA
     window.onload = () => {
       const fragment = new URLSearchParams(window.location.hash.slice(1));
       const accessToken = fragment.get('access_token');
 
       if (accessToken) {
-        // Jika ada token, verifikasi ke Discord
         fetchDiscordUser(accessToken);
-        // Hapus token dari URL biar bersih
-        history.replaceState(null, null, ' ');
+        history.replaceState(null, null, ' '); // Bersihkan URL
       }
     };
 
     function loginDiscord() {
-      // Redirect ke Discord Login
-      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify%20guilds.members.read`;
+      // Logic Redirect yang Benar
+      const scope = encodeURIComponent("identify guilds.members.read");
+      const redirect = encodeURIComponent(DISCORD_REDIRECT_URI);
+      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+      
+      console.log("Redirecting to:", authUrl); // Cek console kalau masih error
       window.location.href = authUrl;
     }
 
     function fetchDiscordUser(token) {
       document.getElementById('user-status').textContent = "Verifying role...";
       
-      // Ambil data member dari Server JGRP kamu
+      // Cek Member di Guild Tertentu (Wajib User sudah masuk server Discord JGRP)
       fetch(`https://discord.com/api/users/@me/guilds/${DISCORD_SERVER_ID}/member`, {
         headers: { authorization: `Bearer ${token}` }
       })
       .then(res => {
-        if(!res.ok) throw new Error("Not a member or Scope Error");
+        if(!res.ok) throw new Error("Gagal! Pastikan kamu member Discord Server JGRP.");
         return res.json();
       })
       .then(member => {
-        // Cek Role
+        console.log("Member Data:", member); // Debugging
+        
+        // Cek Apakah Punya Role
         if(member.roles && member.roles.includes(ALLOWED_ROLE_ID)) {
-          // SUKSES: Role Cocok
           currentUser = member.user;
           enableAttackButton();
         } else {
-          // GAGAL: Tidak punya role
-          alert("Access Denied! You do not have the required role to start a Cashrun.");
-          document.getElementById('user-status').innerHTML = `<span style="color:red">Access Denied (Role Missing)</span>`;
+          alert("Akses Ditolak! Kamu tidak memiliki Role yang dibutuhkan di Discord.");
+          document.getElementById('user-status').innerHTML = `<span style="color:red">Role Missing</span>`;
         }
       })
       .catch(err => {
         console.error(err);
-        alert("Verification Failed. Are you in the JGRP Discord Server?");
-        document.getElementById('user-status').textContent = "Verification Failed";
+        alert("Gagal Verifikasi: " + err.message);
+        document.getElementById('user-status').textContent = "Verification Error";
       });
     }
 
@@ -229,7 +230,7 @@
       document.getElementById('cr-verified-user').value = currentUser.username;
     }
 
-    // --- 2. DATA & MAP LOGIC ---
+    // --- DATA & MAP LOGIC ---
     const zoneData = {
       1: { club:"", logo:"", track:"https://i.imgur.com/cEKMybS.png", name:"Downtown", ownerDiscordId: "" },
       2: { club:"", logo:"", track:"https://i.imgur.com/a4toW9I.png", name:"Tierra Robada", ownerDiscordId: "" },
@@ -288,6 +289,13 @@
       document.getElementById('info-laps').textContent = info.laps;
       document.getElementById('info-record').textContent = info.record;
       document.getElementById('info-cash').textContent = info.cash;
+      
+      // Reset UI jika user belum login
+      if (!currentUser) {
+        document.getElementById('btn-login').style.display = 'block';
+        document.getElementById('btn-attack').style.display = 'none';
+      }
+      
       document.getElementById('info-box').classList.add('active');
     }
 
@@ -374,6 +382,3 @@
   </script>
 </body>
 </html>
-
-
-
