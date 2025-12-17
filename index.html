@@ -289,16 +289,34 @@
     </div>
   </div>
 
+  <!-- ================= WIDGETBOT CHAT ================= -->
+  <!-- GANTI 'server' dan 'channel' DENGAN ID YANG KAMU DAPAT DARI PERINTAH ??crate -->
+  <script src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3" async defer>
+    new Crate({
+      server: 'GANTI_SERVER_ID_DISINI',  // <-- ID SERVER DISCORD JGRP KAMU
+      channel: 'GANTI_CHANNEL_ID_DISINI', // <-- ID CHANNEL #zona-negotiation
+      
+      color: '#00ffcc', // Warna tombol chat (Hijau Neon)
+      notifications: true,
+      indicator: true,
+      location: ['bottom', 'right']
+    });
+  </script>
+  <!-- ================================================== -->
+
   <script>
     // --- KONFIGURASI ---
     const SHEETSON_API = "https://api.sheetson.com/v2/sheets/jgrp"; 
     const SHEETSON_KEY = "RWV7ouHImJvD33guxGKYc2Xqxqy3nuenc8hp8L06xcT33W6AaVY2xLHqPQE";
     const SPREADSHEET_ID = "1_A7elaDSa-dToh3R2eGH25Ghrd0AKqDHY_2Jj5-iogI"; 
     
-    // GANTI LINK DI BAWAH DENGAN WEBHOOK DISCORD KAMU
+    // GANTI WEBHOOK DISCORD KAMU
     const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1450862700736413887/pScPkMGmyFiHTQpZMBB9_tGS14pgjtxQ6cyhHqq7j0aOOgwpvJVQLoIQeu8hDm4ZUNZZ";
 
-    // Data Awal (Track Map & Name Statis)
+    // MASUKKAN ID CHANNEL CHAT YANG SAMA DENGAN WIDGET DI ATAS (UNTUK LINK DI PESAN WEBHOOK)
+    const CHAT_CHANNEL_ID = "1370728232906653781";
+
+    // Data Awal
     const zoneData = {
       1: { club:"", logo:"", track:"https://i.imgur.com/cEKMybS.png", name:"Downtown", ownerDiscordId: "" },
       2: { club:"", logo:"", track:"https://i.imgur.com/a4toW9I.png", name:"Tierra Robada", ownerDiscordId: "" },
@@ -313,7 +331,7 @@
 
     let currentZoneId = null;
 
-    // Fetch Data from Sheetson
+    // Fetch Data
     fetch(SHEETSON_API, {
       headers: { "Authorization": `Bearer ${SHEETSON_KEY}`, "X-Spreadsheet-Id": SPREADSHEET_ID },
     })
@@ -332,23 +350,20 @@
           cashFormatted = "$" + (parseInt(cashFormatted, 10) || 0).toLocaleString();
         }
 
-        // Update data zona dengan ID Pemilik dari Sheet
         if(zoneData[zoneId]) {
           zoneData[zoneId].club = row.Owner || zoneData[zoneId].club;
-          zoneData[zoneId].ownerDiscordId = row.OwnerID || ""; // Mengambil kolom OwnerID
+          zoneData[zoneId].ownerDiscordId = row.OwnerID || "";
           zoneData[zoneId].logo = row.LogoMap || zoneData[zoneId].logo;
           zoneData[zoneId].length = row.Length || "-";
           zoneData[zoneId].laps = row.Rounds || "-";
           zoneData[zoneId].record = row.Record || "-";
           zoneData[zoneId].cash = cashFormatted || "-";
           
-          // Update gambar logo di map utama
           const el = document.querySelector(`.zone[onclick="showInfo(${zoneId})"] img`);
           if (el && row.LogoMap) el.src = row.LogoMap;
         }
       });
 
-      // Update Main Map jika ada
       const mainMapRow = data.find(r => r.MainMap);
       if (mainMapRow) document.getElementById('main-map').src = mainMapRow.MainMap;
     })
@@ -384,7 +399,6 @@
       const modal = document.getElementById('cashrun-modal');
       const btn = e.target.closest('.cashrun-btn');
 
-      // Jangan tutup jika klik di dalam box, zona, modal, atau tombol cashrun
       if(!box.contains(e.target) && !zone && !modal.contains(e.target) && !btn){
         closeInfo();
       }
@@ -404,10 +418,8 @@
       if(!currentZoneId) return;
       const info = zoneData[currentZoneId];
 
-      // Auto-fill Amount
       const cleanCash = info.cash.replace(/[$,.]/g, "") || "0"; 
       document.getElementById('cr-amount').value = "$" + parseInt(cleanCash).toLocaleString(); 
-      
       document.getElementById('cr-attacker').value = "";
       document.getElementById('cr-rules').value = "";
 
@@ -426,21 +438,21 @@
       const amount = document.getElementById('cr-amount').value;
       const rules = document.getElementById('cr-rules').value;
       const ownerName = info.club; 
-      const ownerRoleId = info.ownerDiscordId; // Ambil ID dari data Sheet
+      const ownerRoleId = info.ownerDiscordId;
 
       if(!attackerName || !amount) {
         alert("Please fill in Club Name and Amount!");
         return;
       }
 
-      // Logic Tagging
       let mentionText = `**${ownerName}**`; 
       if (ownerRoleId && ownerRoleId.length > 5) {
-        mentionText = `<@&${ownerRoleId}>`; // Tag Role
+        mentionText = `<@&${ownerRoleId}>`; 
       }
 
+      // Payload Update: Memberitahu Discord untuk membalas di Channel Chat
       const payload = {
-        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!`,
+        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!\n\n💬 **Discussion / Negotiation:** <#${CHAT_CHANNEL_ID}> (Reply here to chat with website user)`,
         embeds: [
           {
             title: "⚔️ New Challenge Received",
@@ -453,7 +465,7 @@
               { name: "📜 Rules", value: rules || "Standard Street Rules" }
             ],
             thumbnail: { url: info.logo },
-            footer: { text: "Street.NET JGRP System" },
+            footer: { text: "Street.NET JGRP System • Check website chat" },
             timestamp: new Date().toISOString()
           }
         ]
@@ -466,7 +478,7 @@
       })
       .then(response => {
         if(response.ok) {
-          alert("Challenge sent successfully to Discord!");
+          alert("Challenge sent! Please open the CHAT BUBBLE (bottom right) to negotiate.");
           closeCashrunModal();
         } else {
           alert("Failed to send. Check console.");
@@ -493,4 +505,3 @@
   </script>
 </body>
 </html>
-
