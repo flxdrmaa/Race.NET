@@ -1,388 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Street.NET JGRP</title>
-  
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2084454135210602" crossorigin="anonymous"></script>
-  <meta name="google-adsense-account" content="ca-pub-2084454135210602">
-  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
-  
-  <style>
-    :root { --default-zone-logo-size: 100px; }
-    body{ margin:0; background:#000; font-family:Arial, sans-serif; color:#fff; overflow-x:hidden; }
-    .map-container{ position:relative; min-height:100vh; width:100%; overflow-x:hidden; }
-    .background-overlay{ position:fixed; inset:0; background:url('https://i.imgur.com/ne9vTRM.png') no-repeat center center; background-size:cover; opacity:.80; z-index:0; pointer-events:none; width:100vw; height:100vh; }
-    .topbar{ position:sticky; top:0; width:100%; height:clamp(40px,10vw,50px); background:rgba(0,0,0,.6); color:#00ffcc; font-size:clamp(12px,3vw,16px); padding:clamp(8px,2vw,12px) clamp(10px,3vw,20px); font-weight:bold; letter-spacing:1px; z-index:10; display:flex; align-items:center; }
-    .topbar .purple{color:#800080;} .topbar .green{color:#00ff00;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menkrep Mabar</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .map-frame{ position:relative; width:min(90vw,1200px); margin:clamp(20px,5vw,60px) auto; border:2px solid rgba(0,255,200,.3); box-shadow:0 0 20px rgba(0,255,200,.1); border-radius:20px; background:#111; overflow:hidden; z-index:2; aspect-ratio:1 / 1; }
-    .map-frame img{ width:100%; height:100%; display:block; object-fit:contain; }
-    
-    .zone { position: absolute; width: var(--default-zone-logo-size); height: var(--default-zone-logo-size); cursor: pointer; transition: transform 0.3s ease; animation: pulse 2s infinite ease-in-out; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-    .zone:hover { transform: scale(1.3); z-index: 999; }
-    .zone img { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; }
-    .zone:hover img{ transform:none !important; box-shadow:0 0 8px #00ffcc80; }
+    <style>
+        /* --- CSS & UI STYLING --- */
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #10b981; /* Hijau Emerald */
+            --primary-hover: #059669;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
 
-    #info-box{ position:fixed; top:50%; right:clamp(10px,3vw,20px); transform:translateY(-50%); width:min(70vw,250px); background:#0f1f1d; border:2px solid #1b3d39; padding:clamp(6px,1.5vw,8px); color:#fff; display:none; border-radius:12px; font-family:Arial, sans-serif; z-index:20; box-shadow:0 0 15px #00ffcc99; opacity:0; }
-    #info-box.active{ display:block; animation:scaleFadeIn .5s ease-out forwards, neon-border 1.5s infinite ease-in-out; }
-    @keyframes scaleFadeIn{ 0%{opacity:0; transform:translateY(-50%) scale(.7);} 100%{opacity:1; transform:translateY(-50%) scale(1);} }
-    @keyframes scaleFadeOut{ 0%{opacity:1; transform:translateY(-50%) scale(1);} 100%{opacity:0; transform:translateY(-50%) scale(.7);} }
-    
-    #info-box .header{ display:flex; align-items:center; gap:clamp(8px,2vw,10px); justify-content:flex-start; }
-    #info-box .logo{ width:var(--info-box-logo-size, 40px); height:var(--info-box-logo-size, 40px); object-fit:contain; }
-    #info-box .title{ font-size:clamp(10px,2.5vw,12px); margin:0 auto; color:#bbb; text-align:center; flex-grow:1; }
-    #info-box .title h2{ margin:0; font-size:clamp(14px,3.5vw,16px); color:#fff200; }
-    #info-box .track-map{ width:100%; margin:clamp(8px,2vw,10px) 0; }
-    #info-box .track-map img{ width:100%; height:auto; object-fit:contain; border:1px solid #555; border-radius:8px; background:#111; max-height:clamp(100px,30vw,140px); }
-    #info-box .track-name{ font-weight:bold; font-size:clamp(12px,3vw,15px); text-align:center; border-top:1px solid #444; padding-top:6px; margin-top:6px; color:#aaffff; }
-    #info-box .track-details{ margin-top:5px; }
-    #info-box .track-details div{ display:flex; justify-content:space-between; font-size:clamp(11px,2.5vw,13px); padding:2px 0; }
-    #info-box .track-details span{ color:#ccc; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
 
-    /* TOMBOL KHUSUS */
-    .cashrun-btn { display: block; width: 100%; margin-top: 10px; border: 1px solid #fff; color: #fff; padding: 8px; text-align: center; font-weight: bold; cursor: pointer; border-radius: 8px; text-transform: uppercase; font-size: 12px; transition: 0.3s; }
-    
-    .login-btn { background: #5865F2; display:block; }
-    .login-btn:hover { background: #4752C4; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
 
-    .attack-btn { background: linear-gradient(90deg, #800080, #ff00ff); display:none; }
-    .attack-btn:hover { background: linear-gradient(90deg, #ff00ff, #800080); box-shadow: 0 0 10px #ff00ff; }
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
 
-    #user-status { font-size: 10px; color: #aaa; text-align: center; margin-top: 5px; font-style: italic; }
-    #user-status span { color: #00ff00; font-weight: bold; }
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    #cashrun-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-    .modal-content { background: #111; border: 2px solid #00ffcc; padding: 20px; width: min(90%, 350px); border-radius: 15px; box-shadow: 0 0 20px rgba(0, 255, 204, 0.3); color: #fff; animation: scaleFadeIn 0.3s ease; }
-    .modal-content h3 { margin-top: 0; text-align: center; color: #00ffcc; text-transform: uppercase; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 12px; color: #ccc; margin-bottom: 5px; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
-    .form-group textarea { resize: vertical; height: 60px; }
-    .modal-actions { display: flex; justify-content: space-between; gap: 10px; }
-    .btn-cancel { background: #555; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; flex: 1; }
-    .btn-send { background: #00ff00; color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
 
-    @media (max-width:480px){
-      :root{ --default-zone-logo-size: clamp(20px, 5vw, 25px); }
-      .map-frame{ width:98vw; border-radius:10px; }
-      #info-box{ width:min(90vw,200px); top:auto; bottom:10px; right:50%; transform:translateX(50%); }
-      #info-box.active{ animation:scaleFadeInMobile .5s ease-out forwards, neon-border 1.5s infinite ease-in-out; }
-      @keyframes scaleFadeInMobile{ 0%{opacity:0; transform:translateX(50%) scale(.7);} 100%{opacity:1; transform:translateX(50%) scale(1);} }
-    }
-    .audio-controls{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:30; }
-    .audio-controls button{ background:rgba(0,0,0,.6); color:#00ffcc; border:2px solid #1b3d39; border-radius:10px; padding:8px 16px; cursor:pointer; }
-  </style>
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* Kamu bisa ganti URL di bawah dengan gambar servermu */
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1607513746994-51f730a44832?q=80&w=1920&auto=format&fit=crop') center/cover;
+            padding: 0 20px;
+            margin-top: 50px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 span {
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+        }
+
+        .btn-discord {
+            background-color: #5865F2;
+            color: white;
+        }
+
+        .btn-discord:hover {
+            background-color: #4752C4;
+            transform: translateY(-3px);
+        }
+
+        /* Section Global */
+        section {
+            padding: 80px 10vw;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--primary-color);
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--surface-color);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0b1120;
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+        }
+
+        /* Notifikasi Copy IP */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Bisa dikembangkan jadi menu hamburger */
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <amp-auto-ads type="adsense" data-ad-client="ca-pub-2084454135210602"></amp-auto-ads>
-  
-  <div class="map-container">
-    <div class="background-overlay"></div>
-    <div class="topbar"><h2>Welcome to <span class="purple">Street</span>.<span class="green">NET</span></h2></div>
 
-    <div class="map-frame">
-      <img id="main-map" src="" alt="Main Map" loading="lazy"/>
-      <!-- Zones -->
-      <div class="zone" onclick="showInfo(1)" style="top:27.28%; left:11.68%;" data-info-logo-size="70px"><img src="" alt="Zone 1"></div>
-      <div class="zone" onclick="showInfo(2)" style="top:2.72%; left:17.33%;" data-info-logo-size="70px"><img src="" alt="Zone 2"></div>
-      <div class="zone" onclick="showInfo(3)" style="top:43.29%; left:2.47%;" data-info-logo-size="70px"><img src="" alt="Zone 3"></div>
-      <div class="zone" onclick="showInfo(4)" style="top:49.62%; left:13.11%;" data-info-logo-size="70px"><img src="" alt="Zone 4"></div>
-      <div class="zone" onclick="showInfo(5)" style="top:64.12%; left:25.31%;" data-info-logo-size="70px"><img src="" alt="Zone 5"></div>
-      <div class="zone" onclick="showInfo(6)" style="top:2.89%; left:82.71%;" data-info-logo-size="70px"><img src="" alt="Zone 6"></div>
-      <div class="zone" onclick="showInfo(7)" style="top:7.54%; left:75.47%;" data-info-logo-size="70px"><img src="" alt="Zone 7"></div>
-      <div class="zone" onclick="showInfo(8)" style="top:14.85%; left:78.94%;" data-info-logo-size="70px"><img src="" alt="Zone 8"></div>
-      <div class="zone" onclick="showInfo(9)" style="top:20.58%; left:87.65%;" data-info-logo-size="70px"><img src="" alt="Zone 9"></div>
-    </div>
+    <!-- Navigasi -->
+    <nav>
+        <a href="#" class="logo"><i class="fa-solid fa-cubes"></i> MineServer</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Fitur</a></li>
+            <li><a href="#store">Store</a></li>
+        </ul>
+    </nav>
 
-    <!-- Info Box -->
-    <div id="info-box">
-      <div class="header">
-        <img id="info-logo" class="logo" src="" alt="Club Logo"/>
-        <div class="title"><p>Controlled By</p><h2 id="info-club">CLUB</h2></div>
-      </div>
-      <div class="track-map"><img id="info-track-map" src="" alt="Track Map"/></div>
-      <div class="track-name" id="info-track-name">Track Name</div>
-      <div class="track-details">
-        <div><span>Length</span><strong id="info-length">-</strong></div>
-        <div><span>Rounds</span><strong id="info-laps">-</strong></div>
-        <div><span>Record</span><strong id="info-record">-</strong></div>
-        <div><span>Cash</span><strong id="info-cash">-</strong></div>
-      </div>
-      
-      <!-- Tombol Login (Default Muncul) -->
-      <button id="btn-login" class="cashrun-btn login-btn" onclick="loginDiscord()">🔐 Login to Verify</button>
-      
-      <!-- Tombol Attack (Default Hilang) -->
-      <button id="btn-attack" class="cashrun-btn attack-btn" onclick="openCashrunModal()">⚔️ Start Cashrun</button>
-      
-      <div id="user-status">Not logged in</div>
-    </div>
-
-    <div class="audio-controls"><button id="playPauseBtn">Play Music</button></div>
-    <audio id="backgroundMusic" loop><source src="https://audio.jukehost.co.uk/CjOyNg0OCnmMTMHWFDejx1GsrcCmamfM" type="audio/mpeg"/></audio>
-  </div>
-
-  <div id="cashrun-modal">
-    <div class="modal-content">
-      <h3>Cashrun Form</h3>
-      <div class="form-group">
-        <label>Authenticated As:</label>
-        <input type="text" id="cr-verified-user" disabled style="color:#00ff00; border-color:#00ff00; cursor:not-allowed;">
-      </div>
-      <div class="form-group">
-        <label>Your Club Name (Challenger):</label>
-        <input type="text" id="cr-attacker" placeholder="Ex: Street Racers">
-      </div>
-      <div class="form-group">
-        <label>Bet Amount:</label>
-        <input type="text" id="cr-amount" placeholder="$0">
-      </div>
-      <div class="form-group">
-        <label>Rules / Terms:</label>
-        <textarea id="cr-rules" placeholder="Ex: Clean race, no blocking..."></textarea>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeCashrunModal()">Cancel</button>
-        <button class="btn-send" onclick="sendToDiscord()">Send Challenge</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // --- KONFIGURASI KEAMANAN ---
-    const DISCORD_CLIENT_ID = "1375477106750001234"; // ID APLIKASI
-    const DISCORD_SERVER_ID = "1370728226137047060"; // ID SERVER JGRP
-    const ALLOWED_ROLE_ID = "1370728226175062132"; // Contoh: "123456789012345678"
-
-    const SHEETSON_API = "https://api.sheetson.com/v2/sheets/jgrp"; 
-    const SHEETSON_KEY = "RWV7ouHImJvD33guxGKYc2Xqxqy3nuenc8hp8L06xcT33W6AaVY2xLHqPQE";
-    const SPREADSHEET_ID = "1_A7elaDSa-dToh3R2eGH25Ghrd0AKqDHY_2Jj5-iogI"; 
-    const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1450862700736413887/pScPkMGmyFiHTQpZMBB9_tGS14pgjtxQ6cyhHqq7j0aOOgwpvJVQLoIQeu8hDm4ZUNZZ";
-    const CHAT_CHANNEL_ID = "1370728232906653781";
-
-    let currentZoneId = null;
-    let currentUser = null; 
-
-    // --- LOGIC OTOMATIS REDIRECT URI ---
-    // Ini mendeteksi URL website saat ini, jadi aman untuk localhost maupun github.io
-    // PASTIKAN SEMUA VARIABEL INI SUDAH DIDAFTARKAN DI DISCORD DEVELOPER PORTAL
-    const currentUrl = window.location.href.split('#')[0]; // Ambil URL tanpa hash
-    const DISCORD_REDIRECT_URI = currentUrl.endsWith('/') ? currentUrl : currentUrl + '/';
-
-    // 1. CEK TOKEN SAAT WEB DIBUKA
-    window.onload = () => {
-      const fragment = new URLSearchParams(window.location.hash.slice(1));
-      const accessToken = fragment.get('access_token');
-
-      if (accessToken) {
-        fetchDiscordUser(accessToken);
-        history.replaceState(null, null, ' '); // Bersihkan URL
-      }
-    };
-
-    function loginDiscord() {
-      // Logic Redirect yang Benar
-      const scope = encodeURIComponent("identify guilds.members.read");
-      const redirect = encodeURIComponent(DISCORD_REDIRECT_URI);
-      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
-      
-      console.log("Redirecting to:", authUrl); // Cek console kalau masih error
-      window.location.href = authUrl;
-    }
-
-    function fetchDiscordUser(token) {
-      document.getElementById('user-status').textContent = "Verifying role...";
-      
-      // Cek Member di Guild Tertentu (Wajib User sudah masuk server Discord JGRP)
-      fetch(`https://discord.com/api/users/@me/guilds/${DISCORD_SERVER_ID}/member`, {
-        headers: { authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        if(!res.ok) throw new Error("Gagal! Pastikan kamu member Discord Server JGRP.");
-        return res.json();
-      })
-      .then(member => {
-        console.log("Member Data:", member); // Debugging
+    <!-- Bagian Utama (Hero) -->
+    <header class="hero" id="home">
+        <h1>Selamat Datang di <span>MineServer</span></h1>
+        <p>Server Survival terbaik di Indonesia dengan fitur ekonomi unik, komunitas ramah, dan event mingguan yang seru!</p>
         
-        // Cek Apakah Punya Role
-        if(member.roles && member.roles.includes(ALLOWED_ROLE_ID)) {
-          currentUser = member.user;
-          enableAttackButton();
-        } else {
-          alert("Akses Ditolak! Kamu tidak memiliki Role yang dibutuhkan di Discord.");
-          document.getElementById('user-status').innerHTML = `<span style="color:red">Role Missing</span>`;
+        <div class="cta-buttons">
+            <!-- Tombol Copy IP -->
+            <button class="btn btn-primary" onclick="copyIP()">
+                <i class="fa-solid fa-gamepad"></i> <span id="ip-text">play.mineserver.com</span>
+            </button>
+            <!-- Tombol Discord -->
+            <a href="https://discord.gg/link-discord-kamu" target="_blank" class="btn btn-discord">
+                <i class="fa-brands fa-discord"></i> Join Discord
+            </a>
+        </div>
+        <p style="margin-top: 15px; font-size: 0.9rem;">(Klik IP di atas untuk menyalin)</p>
+    </header>
+
+    <!-- Bagian Fitur -->
+    <section id="features">
+        <h2 class="section-title">Kenapa Main di Sini?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fa-solid fa-coins"></i>
+                <h3>Ekonomi Seimbang</h3>
+                <p>Sistem pekerjaan (jobs), lelang pemain (auction house), dan toko yang membuat permainan lebih menantang.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Anti-Grief & Land Claim</h3>
+                <p>Rumah dan bangunanmu aman 100%! Gunakan golden shovel untuk mengklaim wilayahmu.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-users"></i>
+                <h3>Komunitas Ramah</h3>
+                <p>Staf yang aktif 24/7 dan pemain yang saling membantu. Tidak ada tempat untuk toxic player!</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-trophy"></i>
+                <h3>Event Berkala</h3>
+                <p>Ikuti turnamen PvP, lomba memancing, dan event cari harta karun setiap akhir pekan dengan hadiah eksklusif.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 MineServer. Bukan produk resmi Minecraft. Tidak disetujui oleh atau terkait dengan Mojang.</p>
+    </footer>
+
+    <!-- Notifikasi Toast -->
+    <div id="toast"><i class="fa-solid fa-check-circle"></i> IP Berhasil Disalin! Sampai jumpa di game.</div>
+
+    <!-- JavaScript untuk fungsionalitas -->
+    <script>
+        // Fungsi untuk menyalin IP Server ke Clipboard
+        function copyIP() {
+            // Ganti ini dengan IP server kamu
+            const serverIP = "play.mineserver.com"; 
+            
+            navigator.clipboard.writeText(serverIP).then(() => {
+                // Tampilkan notifikasi
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                
+                // Hilangkan notifikasi setelah 3 detik
+                setTimeout(function(){ 
+                    toast.className = toast.className.replace("show", ""); 
+                }, 3000);
+            }).catch(err => {
+                console.error('Gagal menyalin text: ', err);
+            });
         }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Gagal Verifikasi: " + err.message);
-        document.getElementById('user-status').textContent = "Verification Error";
-      });
-    }
+    </script>
 
-    function enableAttackButton() {
-      document.getElementById('btn-login').style.display = 'none';
-      document.getElementById('btn-attack').style.display = 'block';
-      document.getElementById('user-status').innerHTML = `Logged in as: <span>${currentUser.username}</span>`;
-      document.getElementById('cr-verified-user').value = currentUser.username;
-    }
-
-    // --- DATA & MAP LOGIC ---
-    const zoneData = {
-      1: { club:"", logo:"", track:"https://i.imgur.com/cEKMybS.png", name:"Downtown", ownerDiscordId: "" },
-      2: { club:"", logo:"", track:"https://i.imgur.com/a4toW9I.png", name:"Tierra Robada", ownerDiscordId: "" },
-      3: { club:"", logo:"", track:"https://i.imgur.com/hlErEUV.png", name:"Ocean Flat", ownerDiscordId: "" },
-      4: { club:"", logo:"", track:"https://i.imgur.com/lR0BjGY.png", name:"Easter Bay", ownerDiscordId: "" },
-      5: { club:"", logo:"", track:"https://i.imgur.com/rAKyRxG.png", name:"Foster Valley", ownerDiscordId: "" },
-      6: { club:"", logo:"", track:"https://i.imgur.com/2aZpTcF.png", name:"Emerald Isle", ownerDiscordId: "" },
-      7: { club:"", logo:"", track:"https://i.imgur.com/2MG6n6Y.png", name:"Red Sands", ownerDiscordId: "" },
-      9: { club:"", logo:"", track:"https://i.imgur.com/4I5LTgq.png", name:"Linden Station", ownerDiscordId: "" },
-      8: { club:"", logo:"", track:"https://i.imgur.com/PeHliUG.png", name:"Old Venturas Strip", ownerDiscordId: "" },
-    };
-
-    fetch(SHEETSON_API, {
-      headers: { "Authorization": `Bearer ${SHEETSON_KEY}`, "X-Spreadsheet-Id": SPREADSHEET_ID },
-    })
-    .then(res => res.json())
-    .then(json => {
-      const data = json.results || json.data || json;
-      if (!Array.isArray(data)) return;
-      data.forEach(row => {
-        const zoneId = Number(row.Zone?.replace(/zone\s*/i, "")) || null;
-        if (!zoneId) return;
-        let cashFormatted = row.Cash;
-        if (cashFormatted) {
-          cashFormatted = String(cashFormatted).replace(/[^\d]/g, "");
-          cashFormatted = "$" + (parseInt(cashFormatted, 10) || 0).toLocaleString();
-        }
-        if(zoneData[zoneId]) {
-          zoneData[zoneId].club = row.Owner || zoneData[zoneId].club;
-          zoneData[zoneId].ownerDiscordId = row.OwnerID || "";
-          zoneData[zoneId].logo = row.LogoMap || zoneData[zoneId].logo;
-          zoneData[zoneId].length = row.Length || "-";
-          zoneData[zoneId].laps = row.Rounds || "-";
-          zoneData[zoneId].record = row.Record || "-";
-          zoneData[zoneId].cash = cashFormatted || "-";
-          const el = document.querySelector(`.zone[onclick="showInfo(${zoneId})"] img`);
-          if (el && row.LogoMap) el.src = row.LogoMap;
-        }
-      });
-      const mainMapRow = data.find(r => r.MainMap);
-      if (mainMapRow) document.getElementById('main-map').src = mainMapRow.MainMap;
-    });
-
-    function showInfo(id){
-      currentZoneId = id;
-      const info = zoneData[id];
-      if(!info) return;
-      const zone = document.querySelector(`.zone[onclick="showInfo(${id})"]`);
-      const infoLogoSize = zone?.dataset.infoLogoSize || '40px';
-      document.getElementById('info-logo').style.setProperty('--info-box-logo-size', infoLogoSize);
-      document.getElementById('info-logo').src = info.logo;
-      document.getElementById('info-club').textContent = info.club;
-      document.getElementById('info-track-map').src = info.track;
-      document.getElementById('info-track-name').textContent = info.name;
-      document.getElementById('info-length').textContent = info.length;
-      document.getElementById('info-laps').textContent = info.laps;
-      document.getElementById('info-record').textContent = info.record;
-      document.getElementById('info-cash').textContent = info.cash;
-      
-      // Reset UI jika user belum login
-      if (!currentUser) {
-        document.getElementById('btn-login').style.display = 'block';
-        document.getElementById('btn-attack').style.display = 'none';
-      }
-      
-      document.getElementById('info-box').classList.add('active');
-    }
-
-    document.addEventListener('click', (e)=>{
-      const box = document.getElementById('info-box');
-      const zone = e.target.closest('.zone');
-      const modal = document.getElementById('cashrun-modal');
-      const btn = e.target.closest('.cashrun-btn');
-      if(!box.contains(e.target) && !zone && !modal.contains(e.target) && !btn) closeInfo();
-    });
-
-    function closeInfo(){
-      const box = document.getElementById('info-box');
-      box.style.animation = 'scaleFadeOut .5s ease';
-      setTimeout(()=>{ box.classList.remove('active'); box.style.animation = ''; }, 500);
-    }
-
-    function openCashrunModal() {
-      if(!currentUser) { alert("Please Login First!"); return; }
-      if(!currentZoneId) return;
-      const info = zoneData[currentZoneId];
-      let rawCash = info.cash;
-      if (rawCash === undefined || rawCash === null) rawCash = "0";
-      const cleanCash = String(rawCash).replace(/[^\d]/g, "") || "0"; 
-      document.getElementById('cr-amount').value = "$" + parseInt(cleanCash).toLocaleString(); 
-      document.getElementById('cr-attacker').value = "";
-      document.getElementById('cr-rules').value = "";
-      document.getElementById('cashrun-modal').style.display = "flex";
-    }
-
-    function closeCashrunModal() { document.getElementById('cashrun-modal').style.display = "none"; }
-
-    function sendToDiscord() {
-      if(!currentZoneId || !currentUser) return;
-      const info = zoneData[currentZoneId];
-      const attackerName = document.getElementById('cr-attacker').value;
-      const amount = document.getElementById('cr-amount').value;
-      const rules = document.getElementById('cr-rules').value;
-      const ownerName = info.club; 
-      const ownerRoleId = info.ownerDiscordId;
-
-      if(!attackerName || !amount) { alert("Please fill details!"); return; }
-
-      let mentionText = `**${ownerName}**`; 
-      if (ownerRoleId && ownerRoleId.length > 5) mentionText = `<@&${ownerRoleId}>`; 
-
-      const payload = {
-        content: `🚨 **CASHRUN ALERT!** 🚨\nCalling ${mentionText}, your territory in **${info.name}** is under challenge!\n\nUser **${currentUser.username}** (Verified) has initiated this challenge.\n💬 **Discussion:** Please open Discord <#${CHAT_CHANNEL_ID}> to negotiate.`,
-        embeds: [
-          {
-            title: "⚔️ New Challenge Received",
-            color: 16711680,
-            fields: [
-              { name: "🛡️ Defender", value: ownerName, inline: true },
-              { name: "⚔️ Challenger Club", value: attackerName, inline: true },
-              { name: "👤 Representative", value: currentUser.username + ` (ID: ${currentUser.id})` },
-              { name: "📍 Territory", value: `${info.name} (Zone ${currentZoneId})` },
-              { name: "💰 Bet Amount", value: amount, inline: true },
-              { name: "📜 Rules", value: rules || "Standard Street Rules" }
-            ],
-            thumbnail: { url: info.logo },
-            image: { url: info.track },
-            footer: { text: "Street.NET Secure System" },
-            timestamp: new Date().toISOString()
-          }
-        ]
-      };
-
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-      })
-      .then(response => {
-        if(response.ok) { alert("Challenge Sent!"); closeCashrunModal(); }
-        else { alert("Failed to send."); }
-      });
-    }
-
-    const audio = document.getElementById('backgroundMusic');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    playPauseBtn.addEventListener('click', function(){
-      if(audio.paused){ audio.play().catch(console.log); playPauseBtn.textContent = 'Pause Music'; }
-      else{ audio.pause(); playPauseBtn.textContent = 'Play Music'; }
-    });
-  </script>
 </body>
 </html>
-
-
-
-
